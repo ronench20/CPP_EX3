@@ -1,19 +1,17 @@
-//
-// Created by ronen on 08/05/2025.
-//
+//ronen.chereshn@msmail.ariel.ac.il
 
 #include "BoardGame.hpp"
 
 namespace player {
     BoardGame::BoardGame() {
         for (int i = 0; i < 6; i++) {
-            players[i] = nullptr;
+            playersList[i] = nullptr;
         }
     }
 
     void BoardGame::addPlayer(Player *player) {
         if (numOfPlayers < 6) {
-            players[numOfPlayers++] = player;
+            playersList[numOfPlayers++] = player;
         } else {
             std::cout << "Cannot add more players." << std::endl;
         }
@@ -23,14 +21,14 @@ namespace player {
         if (numOfPlayers < 2) {
             return "No players in the game.";
         } else{
-            return players[currentPlayerIndex]->getName();
+            return playersList[currentPlayerIndex]->getName();
         }
     }
 
-    string BoardGame::playersNames() const {
+    string BoardGame::players() const {
         string names;
         for (int i = 0; i < numOfPlayers; i++) {
-            names += players[i]->getName();
+            names += playersList[i]->getName();
             if (i < numOfPlayers - 1) {
                 names += ", ";
             }
@@ -42,9 +40,9 @@ namespace player {
         int count = 0;
         string winnerName;
         for (int i = 0; i < numOfPlayers; ++i) {
-            if (!players[i]->isCouped()) {
+            if (!playersList[i]->isCouped()) {
                 count++;
-                winnerName = players[i]->getName();
+                winnerName = playersList[i]->getName();
             }
         }
         if (count == 1) {
@@ -60,7 +58,7 @@ namespace player {
         } else {
             for (int i = 0; i < numOfPlayers; ++i) {
                 int next = (currentPlayerIndex + 1) % numOfPlayers;
-                if (players[next]->isCouped()) {
+                if (!playersList[next]->isCouped()) {
                     currentPlayerIndex = next;
                     return;
                 }

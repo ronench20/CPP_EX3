@@ -1,6 +1,4 @@
-//
-// Created by ronen on 07/05/2025.
-//
+//ronen.chereshn@msmail.ariel.ac.il
 
 #include "Player.hpp"
 
@@ -17,39 +15,6 @@ namespace player {
         coins -= amount;
     }
 
-//    void Player::gather() {
-//        if (!isSanctioned()) {
-//            coins++;
-//        }
-//    }
-//
-//    void Player::tax() {
-//        if (!isSanctioned()) {// change to the right function
-//            coins += 2;
-//        }
-//    }
-//
-//    void Player::bribe() {
-//        if (coins >= 4) {
-//            coins -= 4;
-//        } else {
-//            std::cout << "Not enough coins to bribe." << std::endl;
-//        }
-//    }
-//
-//    void Player::arrest(Player &target) {
-//        if (target.isArrested()){
-//            std::cout << target.getName() << " is already arrested." << std::endl;
-//        }
-//        else if (target.getCoins() == 0) {
-//            std::cout << target.getName() << " has no coins to arrest." << std::endl;
-//        }
-//        else {
-//            target.setArrested(true);
-//            target.removeCoins(1);
-//            coins++;
-//        }
-//    }
 
     bool Player::isArrested() const {
         return arrested;
@@ -59,14 +24,6 @@ namespace player {
         this->arrested = arrested;
     }
 
-//    void Player::sanction(Player &target) {
-//        if (coins >= 3) {
-//            coins -= 3;
-//            target.setSanctioned(true);
-//        } else {
-//            std::cout << "Not enough coins to sanction." << std::endl;
-//        }
-//    }
 
     bool Player::isSanctioned() const {
         return sanctioned;
@@ -76,14 +33,6 @@ namespace player {
         this->sanctioned = sanctioned;
     }
 
-//    void Player ::coup(Player &target) {
-//        if (coins >= 7) {
-//            coins -= 7;
-//            target.setCouped(true);
-//        } else {
-//            std::cout << "Not enough coins to coup." << std::endl;
-//        }
-//    }
 
     bool Player::isCouped() const {
         return couped;
@@ -91,5 +40,20 @@ namespace player {
 
     void Player::setCouped(bool couped) {
         this->couped = couped;
+    }
+
+    bool Player::isGoverned() const {
+        return governed;
+    }
+
+    void Player::setGoverned(bool governed) {
+        this->governed = governed;
+    }
+
+    bool Player::isSpied() const {
+        return spied;
+    }
+    void Player::setSpied(bool spied) {
+        this->spied = spied;
     }
 }

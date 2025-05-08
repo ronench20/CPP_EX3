@@ -1,6 +1,5 @@
-//
-// Created by ronen on 08/05/2025.
-//
+//ronen.chereshn@msmail.ariel.ac.il
+
 #ifndef CPP_EX3_GAMERULES_HPP
 #define CPP_EX3_GAMERULES_HPP
 
@@ -11,16 +10,16 @@ namespace player{
 
     class BoardGame;
     class GameRules : public Player{
-    private:
+    protected:
         BoardGame* boardGame;
 
     public:
         GameRules(const std::string& name, BoardGame* boardGame);
         void gather();
-        void tax();
+        virtual void tax();
         void bribe();
         void arrest(Player& target);
-        void sanction(Player& target);
+        virtual void sanction(Player& target);
         void coup(Player& target);
     };
 }

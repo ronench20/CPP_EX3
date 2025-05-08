@@ -1,6 +1,5 @@
-//
-// Created by ronen on 08/05/2025.
-//
+//ronen.chereshn@msmail.ariel.ac.il
+
 
 #ifndef CPP_EX3_BOARDGAME_HPP
 #define CPP_EX3_BOARDGAME_HPP
@@ -13,7 +12,7 @@ namespace player{
 
     class BoardGame{
     private:
-        BoardGame *players[6];
+        Player *playersList[6];
         int numOfPlayers = 0;
         int currentPlayerIndex = 0;
 
@@ -21,7 +20,7 @@ namespace player{
         BoardGame();
         void addPlayer(Player* player);
         string turn() const;
-        string playersNames() const;
+        string players() const;
         string winner() const;
         void nextTurn();
     };
