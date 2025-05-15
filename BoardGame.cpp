@@ -25,6 +25,14 @@ namespace player {
         }
     }
 
+    Player* BoardGame::getCurrentPlayer() const {
+        if (numOfPlayers < 2) {
+            return nullptr;
+        } else {
+            return playersList[currentPlayerIndex];
+        }
+    }
+
     string BoardGame::players() const {
         string names;
         for (int i = 0; i < numOfPlayers; i++) {
@@ -53,6 +61,13 @@ namespace player {
     }
 
     void BoardGame::nextTurn() {
+        Player* current = getCurrentPlayer();
+        if (current != nullptr && current->getExtraMove()) {
+            current->setExtraMove(false);
+            std::cout << current->getName() << " used their extra action (bribe).\n";
+            return;
+        }
+
         if (numOfPlayers < 2) {
            cout << "No players in the game." << endl;
         } else {
@@ -60,6 +75,7 @@ namespace player {
                 int next = (currentPlayerIndex + 1) % numOfPlayers;
                 if (!playersList[next]->isCouped()) {
                     currentPlayerIndex = next;
+                    getCurrentPlayer()->startTurn();
                     return;
                 }
             }

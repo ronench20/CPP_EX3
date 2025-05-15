@@ -18,9 +18,12 @@ namespace player{
         void gather();
         virtual void tax();
         void bribe();
-        void arrest(Player& target);
+        virtual void arrest(Player& target);
         virtual void sanction(Player& target);
-        void coup(Player& target);
+        virtual void coup(Player& target);
+
+
+
     };
 }
 

@@ -14,6 +14,9 @@ namespace player {
         bool sanctioned = false;
         bool couped = false;
         void addCoins(int amount);
+        bool sanctionedUntilNextTurn = false;
+        bool arrestedLastTurn = false;
+        bool extraMove = false;
 
         bool governed = false;
         bool spied = false;
@@ -24,12 +27,19 @@ namespace player {
         std::string getName() const;
         int getCoins() const;
         bool isArrested() const;
-        bool isSanctioned() const;
+        void setArrestedLastTurn(bool value);
+        bool getArrestedLastTurn() const;
         bool isCouped() const;
         void removeCoins(int amount);
-        void setArrested(bool arrested);
-        void setSanctioned(bool sanctioned);
-        void setCouped(bool couped);
+        virtual void setArrested(bool arrested);
+        virtual void setSanctioned(bool value);
+        bool getSanctioned() const;
+        bool getSanctionedUntilNextTurn() const;
+        void setSanctionedUntilNextTurn(bool value);
+        virtual void setCouped(bool couped);
+        virtual void startTurn();
+        void setExtraMove(bool extraMove);
+        bool getExtraMove() const;
 
 
         bool isGoverned() const;

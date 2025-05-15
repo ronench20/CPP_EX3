@@ -24,15 +24,32 @@ namespace player {
         this->arrested = arrested;
     }
 
+    void Player::setArrestedLastTurn(bool value) {
+        arrestedLastTurn = value;
+    }
 
-    bool Player::isSanctioned() const {
+    bool Player::getArrestedLastTurn() const {
+        return arrestedLastTurn;
+    }
+
+
+
+    bool Player::getSanctioned() const {
         return sanctioned;
     }
 
-    void Player::setSanctioned(bool sanctioned) {
-        this->sanctioned = sanctioned;
+    void Player::setSanctioned(bool value) {
+        this->sanctioned = value;
     }
 
+
+    bool Player::getSanctionedUntilNextTurn() const {
+        return sanctionedUntilNextTurn;
+    }
+
+    void Player::setSanctionedUntilNextTurn(bool value) {
+        sanctionedUntilNextTurn = value;
+    }
 
     bool Player::isCouped() const {
         return couped;
@@ -55,5 +72,16 @@ namespace player {
     }
     void Player::setSpied(bool spied) {
         this->spied = spied;
+    }
+
+    void Player::startTurn() {
+        arrestedLastTurn = false;
+        if (sanctionedUntilNextTurn){
+            sanctionedUntilNextTurn = false;
+        }
+        if (sanctioned && !sanctionedUntilNextTurn) {
+            setSanctioned(false);
+            std::cout << getName() << "'s sanction expired at the start of the turn.\n";
+        }
     }
 }

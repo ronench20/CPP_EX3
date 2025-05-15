@@ -20,6 +20,7 @@ namespace player{
         BoardGame();
         void addPlayer(Player* player);
         string turn() const;
+        Player* getCurrentPlayer() const;
         string players() const;
         string winner() const;
         void nextTurn();
