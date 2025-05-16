@@ -21,6 +21,8 @@ namespace player{
         void addPlayer(Player* player);
         string turn() const;
         Player* getCurrentPlayer() const;
+        int getNumOfPlayers() const;
+        Player* getPlayerIndex(int index) const;
         string players() const;
         string winner() const;
         void nextTurn();

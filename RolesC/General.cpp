@@ -1,11 +1,15 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
-#include "General.hpp"
+#include "../RolesH/General.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace player{
-    General::General(const std::string& name, BoardGame* boardGame) : GameRules(name, boardGame) {}
+    General::General(const std::string& name, BoardGame* boardGame) : GameRules(name, boardGame) {
+        setRole("General");
+    }
 
-    void General::blockCoup(player::Player &target) {
+    void General::blockCoup(player::Player &target, player::Player &attacker) {
         if (getCoins() >= 5){
             removeCoins(5);
             target.setCouped(false);
@@ -13,8 +17,7 @@ namespace player{
             boardGame->nextTurn();
         }
         else{
-            std::cout << "Not enough coins to block coup." << std::endl;
-        }
+            throw std::invalid_argument("Not enough coins to block coup.");        }
     }
 
     void General::setArrested(bool arrested) {

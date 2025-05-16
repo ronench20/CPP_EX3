@@ -8,7 +8,7 @@ namespace player {
     class Player {
     protected:
         std::string name;
-        // Role role;
+        std::string role = "default";
         int coins;
         bool arrested = false;
         bool sanctioned = false;
@@ -18,13 +18,16 @@ namespace player {
         bool arrestedLastTurn = false;
         bool extraMove = false;
 
-        bool governed = false;
+        bool didTax = false;
         bool spied = false;
+        bool spiedUntilNextTurn = false;
 
 
     public:
         Player(std::string name);
         std::string getName() const;
+        std::string getRole() const;
+        void setRole(std::string role);
         int getCoins() const;
         bool isArrested() const;
         void setArrestedLastTurn(bool value);
@@ -41,11 +44,11 @@ namespace player {
         void setExtraMove(bool extraMove);
         bool getExtraMove() const;
 
-
-        bool isGoverned() const;
-        void setGoverned(bool governed);
+        bool getDidTax() const;
+        void setDidTax(bool value);
         bool isSpied() const;
         void setSpied(bool spied);
+        void setSpiedUntilNextTurn(bool spied);
     };
 }
 

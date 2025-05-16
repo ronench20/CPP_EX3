@@ -3,7 +3,7 @@
 #ifndef CPP_EX3_GOVERNOR_HPP
 #define CPP_EX3_GOVERNOR_HPP
 
-#include "GameRules.hpp"
+#include "../GameRules.hpp"
 
 namespace player{
     class Governor : public GameRules{

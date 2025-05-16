@@ -2,11 +2,16 @@
 
 
 #include "GameRules.hpp"
+#include <stdexcept>
 
 using namespace std;
 namespace player{
 
     GameRules::GameRules(const string& name, BoardGame* boardGame) : Player(name), boardGame(boardGame) {}
+
+    void GameRules::startTurn() {
+        Player::startTurn();
+    }
 
     void GameRules::gather() {
         if (!getSanctioned()) {
@@ -20,8 +25,9 @@ namespace player{
     }
 
     void GameRules::tax() {
-        if (getSanctioned() && !isGoverned()) {
+        if (!getSanctioned()) {
             addCoins(2);
+            setDidTax(true);
             boardGame->nextTurn();
         }
         else {
@@ -39,46 +45,47 @@ namespace player{
     }
 
     void GameRules::arrest(Player &target) {
-        if (target.getArrestedLastTurn()) {
-            std::cout << "You can't arrest " << target.getName() << " because they were arrested last turn.\n";
-            return;
-        }
-        if (target.isArrested()){
-            cout << target.getName() << " is already arrested." << endl;
-        }
-        else if (target.getCoins() == 0) {
-            cout << target.getName() << " has no coins to arrest." << endl;
-        }
-        else if (isSpied()){
-            cout << target.getName() << " is spied." << endl;
-
-        }
-        else if (target.isGoverned()) {
-            cout << target.getName() << " is governed." << endl;
-            target.setArrested(true);
-            target.setArrestedLastTurn(true);
-            target.removeCoins(1);
-            addCoins(1);
-            boardGame->nextTurn();
+        if (isSpied()){
+            throw std ::invalid_argument("You can't arrest a player because you are spied.");
         }
         else {
-            target.setArrested(true);
-            target.setArrestedLastTurn(true);
-            target.removeCoins(1);
-            addCoins(1);
-            boardGame->nextTurn();
+            if (target.getArrestedLastTurn()) {
+                std::cout << "You can't arrest " << target.getName() << " because they were arrested last turn.\n";
+                return;
+            }
+            if (target.isArrested()) {
+                cout << target.getName() << " is already arrested." << endl;
+            } else if (target.getCoins() == 0) {
+                cout << target.getName() << " has no coins to arrest." << endl;
+            } else if (isSpied()) {
+                cout << target.getName() << " is spied." << endl;
 
+            } else {
+                target.setArrested(true);
+                target.setArrestedLastTurn(true);
+                target.removeCoins(1);
+                addCoins(1);
+                boardGame->nextTurn();
+
+            }
         }
     }
     void GameRules::sanction(Player& target) {
-        if (getCoins() >= 3) {
+        if (target.getRole() == "Judge" && target.getCoins() >= 4) {
+            removeCoins(4);
+            target.setSanctioned(true);
+            target.setSanctionedUntilNextTurn(true);
+            std::cout << getName() << " sanctioned " << target.getName() << std::endl;
+            boardGame->nextTurn();
+        }
+        else if (target.getRole() != "Judge" && getCoins() >= 3) {
             removeCoins(3);
             target.setSanctioned(true);
             target.setSanctionedUntilNextTurn(true);
             std::cout << getName() << " sanctioned " << target.getName() << std::endl;
             boardGame->nextTurn();
         } else {
-            std::cout << "Not enough coins to sanction.\n";
+            throw std:: invalid_argument("Not enough coins to sanction.");
         }
     }
 
@@ -87,10 +94,22 @@ namespace player{
         if (getCoins() >= 7) {
             target.setCouped(true);
             removeCoins(7);
+            boardGame->nextTurn();
         } else {
             cout << "Not enough coins to coup." << endl;
         }
-        boardGame->nextTurn();
+    }
+
+    void GameRules::mustCoup() {
+        if (getCoins() >= 10){ // check if it is exactly 10 or more
+            for (int i = 0; i < boardGame->getNumOfPlayers(); ++i) {
+                Player* target = boardGame->getPlayerIndex(i);
+                if (target != this && !target->isCouped()) {
+                    coup(*target);
+                    return;
+                }
+            }
+        }
     }
 
 }

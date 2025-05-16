@@ -3,14 +3,14 @@
 #ifndef CPP_EX3_GENERAL_HPP
 #define CPP_EX3_GENERAL_HPP
 
-#include "GameRules.hpp"
+#include "../GameRules.hpp"
 
 namespace player{
     class General : public GameRules{
     public:
         General(const std::string& name, BoardGame* boardGame);
         //void coup(Player& target) override;
-        void blockCoup(Player& target);
+        void blockCoup(Player& target, Player& attacker);
         void setArrested(bool arrested) override;
     };
 }

@@ -3,7 +3,7 @@
 #ifndef CPP_EX3_SPY_HPP
 #define CPP_EX3_SPY_HPP
 
-#include "GameRules.hpp"
+#include "../GameRules.hpp"
 
 namespace player{
     class Spy : public GameRules{

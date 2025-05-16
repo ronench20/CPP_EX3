@@ -1,8 +1,26 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
 #include "Player.hpp"
+#include <stdexcept>
 
 namespace player {
+
+    std::string Player::getName() const {
+        return name;
+    }
+    std::string Player::getRole() const {
+        return role;
+    }
+
+    void Player::setRole(std::string roleName) {
+        if (this->role == "default") {
+            this->role = roleName;
+        }
+        else{
+            throw std:: invalid_argument("Role already set.");
+        }
+    }
+
     int Player::getCoins() const {
         return coins;
     }
@@ -20,8 +38,8 @@ namespace player {
         return arrested;
     }
 
-    void Player::setArrested(bool arrested) {
-        this->arrested = arrested;
+    void Player::setArrested(bool value) {
+        this->arrested = value;
     }
 
     void Player::setArrestedLastTurn(bool value) {
@@ -31,7 +49,6 @@ namespace player {
     bool Player::getArrestedLastTurn() const {
         return arrestedLastTurn;
     }
-
 
 
     bool Player::getSanctioned() const {
@@ -55,31 +72,52 @@ namespace player {
         return couped;
     }
 
-    void Player::setCouped(bool couped) {
-        this->couped = couped;
+    void Player::setDidTax(bool value) {
+        didTax = value;
     }
 
-    bool Player::isGoverned() const {
-        return governed;
+    bool Player::getDidTax() const {
+        return didTax;
     }
 
-    void Player::setGoverned(bool governed) {
-        this->governed = governed;
+    void Player::setCouped(bool value) {
+        this->couped = value;
     }
+
 
     bool Player::isSpied() const {
         return spied;
     }
-    void Player::setSpied(bool spied) {
-        this->spied = spied;
+    void Player::setSpied(bool value) {
+        this->spied = value;
+    }
+    void Player::setSpiedUntilNextTurn(bool value) {
+        spiedUntilNextTurn = value;
     }
 
     void Player::startTurn() {
-        arrestedLastTurn = false;
+        didTax = false;
+
+        if (spiedUntilNextTurn) {
+            spiedUntilNextTurn = false;
+        }
+        else if (spied) {
+            spied = false;
+            std::cout << getName() << "'s spy block has expired." << std::endl;
+        }
+
+        if (arrestedLastTurn) {
+            arrestedLastTurn = false;
+        }
+        else if (arrested) {
+            setArrested(false);
+            std::cout << getName() << " is no longer arrested.\n";
+        }
+
         if (sanctionedUntilNextTurn){
             sanctionedUntilNextTurn = false;
         }
-        if (sanctioned && !sanctionedUntilNextTurn) {
+        else if (sanctioned) {
             setSanctioned(false);
             std::cout << getName() << "'s sanction expired at the start of the turn.\n";
         }

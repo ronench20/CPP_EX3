@@ -1,9 +1,12 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
-#include "Baron.hpp"
+#include "../RolesH/Baron.hpp"
+#include <stdexcept>
 
 namespace player{
-    Baron::Baron(const std::string& name, BoardGame* boardGame) : GameRules(name, boardGame) {}
+    Baron::Baron(const std::string& name, BoardGame* boardGame) : GameRules(name, boardGame) {
+        setRole("Baron");
+    }
 
     void Baron::invest() {
         if (getCoins() >= 3){
@@ -11,7 +14,7 @@ namespace player{
             boardGame->nextTurn();
         }
         else{
-            cout << "Not enough coins to invest." << endl;
+            throw std:: invalid_argument("Not enough coins to invest.");
         }
     }
 

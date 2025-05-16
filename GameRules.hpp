@@ -21,7 +21,8 @@ namespace player{
         virtual void arrest(Player& target);
         virtual void sanction(Player& target);
         virtual void coup(Player& target);
-
+        void startTurn();
+        void mustCoup();
 
 
     };

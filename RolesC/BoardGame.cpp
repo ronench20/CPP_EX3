@@ -1,6 +1,6 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
-#include "BoardGame.hpp"
+#include "../BoardGame.hpp"
 
 namespace player {
     BoardGame::BoardGame() {
@@ -31,6 +31,16 @@ namespace player {
         } else {
             return playersList[currentPlayerIndex];
         }
+    }
+    int BoardGame::getNumOfPlayers() const {
+        return numOfPlayers;
+    }
+
+    Player* BoardGame::getPlayerIndex(int index) const {
+        if (index < 0 || index >= numOfPlayers) {
+            return nullptr;
+        }
+        return playersList[index];
     }
 
     string BoardGame::players() const {
