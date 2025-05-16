@@ -4,6 +4,9 @@
 #include <stdexcept>
 
 namespace player {
+    Player::Player(std::string name) {
+
+    }
 
     std::string Player::getName() const {
         return name;
@@ -121,5 +124,11 @@ namespace player {
             setSanctioned(false);
             std::cout << getName() << "'s sanction expired at the start of the turn.\n";
         }
+    }
+    void Player::setExtraMove(bool value) {
+        extraMove = value;
+    }
+    bool Player::getExtraMove() const {
+        return extraMove;
     }
 }

@@ -5,6 +5,7 @@
 
 #include "Player.hpp"
 #include "BoardGame.hpp"
+#include <string>
 
 namespace player{
 

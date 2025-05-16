@@ -1,6 +1,6 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
-#include "../BoardGame.hpp"
+#include "BoardGame.hpp"
 
 namespace player {
     BoardGame::BoardGame() {
