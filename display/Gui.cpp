@@ -1,6 +1,7 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
 #include "Gui.hpp"
+#include "../GameRules.hpp"
 #include <iostream>
 #include <stdexcept>
 
@@ -43,17 +44,44 @@ namespace gui{
         startText.setPosition(30, 210);
         startText.setFillColor(sf::Color::Black);
 
+
+        gatherButton.setSize(sf::Vector2f(120, 50));
+        gatherButton.setPosition(20, 400);
+        gatherButton.setFillColor(sf::Color::Green);
+        gatherText.setFont(font);
+        gatherText.setCharacterSize(18);
+        gatherText.setString("GATHER");
+        gatherText.setPosition(40, 410);
+        gatherText.setFillColor(sf::Color::Black);
+
+
     }
 
     void Gui::run() {
         while (window.isOpen()) {
             sf::Event event;
             while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed){
+                if (event.type == sf::Event::Closed) {
                     window.close();
                 }
-                if (!gameStarted){
+
+                if (!gameStarted) {
                     registrationInput(event);
+                }
+
+                if (event.type == sf::Event::MouseButtonPressed && gameStarted) {
+                    int mouseX = sf::Mouse::getPosition(window).x;
+                    int mouseY = sf::Mouse::getPosition(window).y;
+
+                    // בדיקה: כפתור gather נלחץ
+                    if (gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        Player* p = game.getCurrentPlayer();
+                        if (p != nullptr) {
+                            // נניח שכל השחקנים הם מסוג שיורש מ־GameRules
+                            // נשתמש ב־C-style cast כמו שביקשת, ללא dynamic_cast
+                            ((GameRules*)p)->gather();
+                        }
+                    }
                 }
             }
 
@@ -68,6 +96,7 @@ namespace gui{
             window.display();
         }
     }
+
 
     void Gui::registrationInput(sf::Event &event) {
         if (event.type == sf::Event::TextEntered && name.size() < 20){
@@ -124,6 +153,8 @@ namespace gui{
     void Gui::gameScreen() {
         showCurrTurn();
         showPlayers();
+
+        makeButton(gatherButton, gatherText);
     }
 
     void Gui::showCurrTurn() {

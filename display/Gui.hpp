@@ -22,6 +22,10 @@ namespace gui {
         sf::RectangleShape roleButton, startButton;
         sf::Text roleText, startText;
 
+        sf::RectangleShape gatherButton;
+        sf::Text gatherText;
+
+
         void registrationInput(sf::Event& event);
         void registration();
         void gameScreen();

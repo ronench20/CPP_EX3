@@ -2,6 +2,7 @@
 
 #include "BoardGame.hpp"
 #include <cstdlib>
+#include <stdexcept>
 #include "RolesH/Baron.hpp"
 #include "RolesH/General.hpp"
 #include "RolesH/Governor.hpp"
@@ -88,7 +89,7 @@ namespace player {
         }
 
         if (numOfPlayers < 2) {
-           cout << "No players in the game." << endl;
+            throw invalid_argument("No players in the game.");
         } else {
             for (int i = 0; i < numOfPlayers; ++i) {
                 int next = (currentPlayerIndex + 1) % numOfPlayers;
