@@ -1,6 +1,15 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
 #include "BoardGame.hpp"
+#include <cstdlib>
+#include "RolesH/Baron.hpp"
+#include "RolesH/General.hpp"
+#include "RolesH/Governor.hpp"
+#include "RolesH/Judge.hpp"
+#include "RolesH/Merchant.hpp"
+#include "RolesH/Spy.hpp"
+
+using namespace std;
 
 namespace player {
     BoardGame::BoardGame() {
@@ -90,5 +99,30 @@ namespace player {
                 }
             }
         }
+    }
+
+    void BoardGame::createPlayer(const string &name) {
+        int i = rand() % 6;
+        Player* player1 = nullptr;
+
+        if (i == 0){
+            player1 = new Baron(name, this);
+        } else if (i == 1){
+            player1 = new General(name, this);
+        }
+        else if (i == 2){
+            player1 = new Governor(name, this);
+        }
+        else if (i == 3){
+            player1 = new Judge(name, this);
+        }
+        else if (i == 4){
+            player1 = new Merchant(name, this);
+        }
+        else if (i == 5){
+            player1 = new Spy(name, this);
+        }
+        addPlayer(player1);
+        cout << "player added" << endl;
     }
 }

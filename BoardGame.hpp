@@ -7,7 +7,6 @@
 #include <iostream>
 #include "Player.hpp"
 
-using namespace std;
 namespace player{
 
     class BoardGame{
@@ -19,13 +18,14 @@ namespace player{
     public:
         BoardGame();
         void addPlayer(Player* player);
-        string turn() const;
+        std::string turn() const;
         Player* getCurrentPlayer() const;
         int getNumOfPlayers() const;
         Player* getPlayerIndex(int index) const;
-        string players() const;
-        string winner() const;
+        std::string players() const;
+        std::string winner() const;
         void nextTurn();
+        void createPlayer(const std::string& name);
     };
 }
 

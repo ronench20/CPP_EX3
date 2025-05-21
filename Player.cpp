@@ -4,8 +4,19 @@
 #include <stdexcept>
 
 namespace player {
-    Player::Player(std::string name) {
-
+    Player::Player(std::string name){
+        this->name = name;
+        this->role = "default";
+        this->coins = 0;
+        this->arrested = false;
+        this->arrestedLastTurn = false;
+        this->sanctioned = false;
+        this->sanctionedUntilNextTurn = false;
+        this->couped = false;
+        this->didTax = false;
+        this->spied = false;
+        this->spiedUntilNextTurn = false;
+        this->extraMove = false;
     }
 
     std::string Player::getName() const {
