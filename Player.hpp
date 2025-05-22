@@ -25,6 +25,9 @@ namespace player {
 
     public:
         Player(std::string name);
+        Player(const Player &other);
+        Player &operator=(const Player &other);
+        virtual ~Player();
         std::string getName() const;
         std::string getRole() const;
         void setRole(std::string role);

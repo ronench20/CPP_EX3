@@ -54,6 +54,23 @@ namespace gui{
         gatherText.setPosition(40, 410);
         gatherText.setFillColor(sf::Color::Black);
 
+        taxButton.setSize(sf::Vector2f(120, 50));
+        taxButton.setPosition(160, 400);
+        taxButton.setFillColor(sf::Color::Green);
+        taxText.setFont(font);
+        taxText.setCharacterSize(18);
+        taxText.setString("TAX");
+        taxText.setPosition(200, 410);
+        taxText.setFillColor(sf::Color::Black);
+
+        bribeButton.setSize(sf::Vector2f(120, 50));
+        bribeButton.setPosition(300, 400);
+        bribeButton.setFillColor(sf::Color::Green);
+        bribeText.setFont(font);
+        bribeText.setCharacterSize(18);
+        bribeText.setString("BRIBE");
+        bribeText.setPosition(330, 410);
+        bribeText.setFillColor(sf::Color::Black);
 
     }
 
@@ -77,6 +94,18 @@ namespace gui{
                         Player* p = game.getCurrentPlayer();
                         if (p != nullptr) {
                             ((GameRules*)p)->gather();
+                        }
+                    }
+                    if (taxButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        Player* p = game.getCurrentPlayer();
+                        if (p != nullptr) {
+                            ((GameRules*)p)->tax();
+                        }
+                    }
+                    if (bribeButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        Player* p = game.getCurrentPlayer();
+                        if (p != nullptr) {
+                            ((GameRules*)p)->bribe();
                         }
                     }
                 }
@@ -152,6 +181,15 @@ namespace gui{
         showPlayers();
 
         makeButton(gatherButton, gatherText);
+        makeButton(taxButton, taxText);
+
+        Player* curr = game.getCurrentPlayer();
+        if (curr != nullptr && curr->getCoins() >= 3) {
+            bribeButton.setFillColor(sf::Color::Green);
+        } else {
+            bribeButton.setFillColor(sf::Color::Red);
+        }
+        makeButton(bribeButton, bribeText);
     }
 
     void Gui::showCurrTurn() {
@@ -170,12 +208,14 @@ namespace gui{
         for (int i = 0; i < game.getNumOfPlayers(); ++i) {
             Player *player = game.getPlayerIndex(i);
             std::string status;
-
+            if (player->getExtraMove()){
+                status += ": has extra move ";
+            }
             if (player->isCouped()){
                 status += "couped ";
             }
             if (player->isArrested()){
-                status += "arrested ";
+                status += ": got arrested ";
             }
             if (player->getSanctioned()){
                 status += "sanctioned ";

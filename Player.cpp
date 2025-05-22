@@ -19,6 +19,39 @@ namespace player {
         this->spiedUntilNextTurn = false;
         this->extraMove = false;
     }
+    Player::Player(const Player &other) {
+        this->name = other.name;
+        this->role = other.role;
+        this->coins = other.coins;
+        this->arrested = other.arrested;
+        this->arrestedLastTurn = other.arrestedLastTurn;
+        this->sanctioned = other.sanctioned;
+        this->sanctionedUntilNextTurn = other.sanctionedUntilNextTurn;
+        this->couped = other.couped;
+        this->didTax = other.didTax;
+        this->spied = other.spied;
+        this->spiedUntilNextTurn = other.spiedUntilNextTurn;
+        this->extraMove = other.extraMove;
+    }
+
+    Player &Player::operator=(const Player &other) {
+        if (this != &other) {
+            this->name = other.name;
+            this->role = other.role;
+            this->coins = other.coins;
+            this->arrested = other.arrested;
+            this->arrestedLastTurn = other.arrestedLastTurn;
+            this->sanctioned = other.sanctioned;
+            this->sanctionedUntilNextTurn = other.sanctionedUntilNextTurn;
+            this->couped = other.couped;
+            this->didTax = other.didTax;
+            this->spied = other.spied;
+            this->spiedUntilNextTurn = other.spiedUntilNextTurn;
+            this->extraMove = other.extraMove;
+        }
+        return *this;
+    }
+    Player::~Player() {}
 
     std::string Player::getName() const {
         return name;

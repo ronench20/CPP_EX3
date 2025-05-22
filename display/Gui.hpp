@@ -25,6 +25,12 @@ namespace gui {
         sf::RectangleShape gatherButton;
         sf::Text gatherText;
 
+        sf::RectangleShape taxButton;
+        sf::Text taxText;
+
+        sf::RectangleShape bribeButton;
+        sf::Text bribeText;
+
         void registrationInput(sf::Event& event);
         void registration();
         void gameScreen();
