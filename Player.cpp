@@ -2,6 +2,7 @@
 
 #include "Player.hpp"
 #include <stdexcept>
+#include <iostream>
 
 namespace player {
     Player::Player(std::string name){
@@ -41,6 +42,8 @@ namespace player {
 
     void Player::addCoins(int amount) {
         coins += amount;
+        std:: cout << "coin added" << std::endl;
+
     }
 
     void Player::removeCoins(int amount) {

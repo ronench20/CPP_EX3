@@ -14,14 +14,9 @@ namespace player{
     }
 
     void GameRules::gather() {
-        if (boardGame->getCurrentPlayer() != this) {
-            return;
-        }
         if (!getSanctioned()) {
             addCoins(1);
             boardGame->nextTurn();
-            cout << "GATHER: Current turn = " << boardGame->getCurrentPlayer()->getName()<< ", called by " << getName() << endl;
-
         }
         else {
             cout << getName() << " is under sanction and cannot gather." << endl;
@@ -106,7 +101,7 @@ namespace player{
     }
 
     void GameRules::mustCoup() {
-        if (getCoins() >= 10){
+        if (getCoins() >= 10){ // check if it is exactly 10 or more
             for (int i = 0; i < boardGame->getNumOfPlayers(); ++i) {
                 Player* target = boardGame->getPlayerIndex(i);
                 if (target != this && !target->isCouped()) {

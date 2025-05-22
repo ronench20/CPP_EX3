@@ -73,12 +73,9 @@ namespace gui{
                     int mouseX = sf::Mouse::getPosition(window).x;
                     int mouseY = sf::Mouse::getPosition(window).y;
 
-                    // בדיקה: כפתור gather נלחץ
                     if (gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
                         Player* p = game.getCurrentPlayer();
                         if (p != nullptr) {
-                            // נניח שכל השחקנים הם מסוג שיורש מ־GameRules
-                            // נשתמש ב־C-style cast כמו שביקשת, ללא dynamic_cast
                             ((GameRules*)p)->gather();
                         }
                     }

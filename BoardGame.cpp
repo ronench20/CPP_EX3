@@ -2,7 +2,6 @@
 
 #include "BoardGame.hpp"
 #include <cstdlib>
-#include <stdexcept>
 #include "RolesH/Baron.hpp"
 #include "RolesH/General.hpp"
 #include "RolesH/Governor.hpp"
@@ -89,7 +88,7 @@ namespace player {
         }
 
         if (numOfPlayers < 2) {
-            throw invalid_argument("No players in the game.");
+            cout << "No players in the game." << endl;
         } else {
             for (int i = 0; i < numOfPlayers; ++i) {
                 int next = (currentPlayerIndex + 1) % numOfPlayers;
@@ -103,7 +102,7 @@ namespace player {
     }
 
     void BoardGame::createPlayer(const string &name) {
-        int i = rand() % 6;
+        int i = rand() % 5;
         Player* player1 = nullptr;
 
         if (i == 0){
@@ -117,10 +116,10 @@ namespace player {
         else if (i == 3){
             player1 = new Judge(name, this);
         }
+//        else if (i == 4){
+//            player1 = new Merchant(name, this);
+//        }
         else if (i == 4){
-            player1 = new Merchant(name, this);
-        }
-        else if (i == 5){
             player1 = new Spy(name, this);
         }
         addPlayer(player1);

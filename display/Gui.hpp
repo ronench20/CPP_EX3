@@ -25,14 +25,13 @@ namespace gui {
         sf::RectangleShape gatherButton;
         sf::Text gatherText;
 
-
+        bool canMakeAction(player::Player* player);
         void registrationInput(sf::Event& event);
         void registration();
         void gameScreen();
         void makeButton(const sf::RectangleShape& button, const sf::Text& text);
         void showCurrTurn();
         void showPlayers();
-
 
     public:
         Gui(player::BoardGame& game);
