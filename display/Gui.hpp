@@ -25,7 +25,6 @@ namespace gui {
         sf::RectangleShape gatherButton;
         sf::Text gatherText;
 
-        bool canMakeAction(player::Player* player);
         void registrationInput(sf::Event& event);
         void registration();
         void gameScreen();

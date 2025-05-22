@@ -15,9 +15,9 @@ namespace player{
     void Merchant::extraCoin() {
         if (getCoins() > 2 && boardGame->getCurrentPlayer() == this) {
             addCoins(1);
-            std::cout << getName() << " got an extra coin." << std::endl;
+            std::cout << getName() << " the Merchant got an extra coin." << std::endl;
         } else {
-            std::cout << getName() << " doesn't have enough coins for an extra coin." << std::endl;
+            std::cout << getName() << " the Merchant doesn't have enough coins for an extra coin." << std::endl;
         }
     }
 

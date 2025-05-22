@@ -13,6 +13,7 @@ using namespace std;
 
 namespace player {
     BoardGame::BoardGame() {
+        srand((unsigned int)(time(0)));
         for (int i = 0; i < 6; i++) {
             playersList[i] = nullptr;
         }
@@ -102,7 +103,7 @@ namespace player {
     }
 
     void BoardGame::createPlayer(const string &name) {
-        int i = rand() % 5;
+        int i = rand() % 6;
         Player* player1 = nullptr;
 
         if (i == 0){
@@ -116,10 +117,10 @@ namespace player {
         else if (i == 3){
             player1 = new Judge(name, this);
         }
-//        else if (i == 4){
-//            player1 = new Merchant(name, this);
-//        }
         else if (i == 4){
+            player1 = new Merchant(name, this);
+        }
+        else if (i == 5){
             player1 = new Spy(name, this);
         }
         addPlayer(player1);
