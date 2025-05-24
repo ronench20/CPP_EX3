@@ -23,7 +23,7 @@ namespace player{
         virtual void sanction(Player& target);
         virtual void coup(Player& target);
         void startTurn();
-        void mustCoup();
+        bool mustCoup() const;
 
 
     };

@@ -126,4 +126,19 @@ namespace player {
         addPlayer(player1);
         cout << "player added" << endl;
     }
+
+    void BoardGame::removePlayer(int index) {
+        if (index < 0 || index >= numOfPlayers){
+            return;
+        }
+        for (int i = index; i < numOfPlayers - 1; ++i) {
+            playersList[i] = playersList[i + 1];
+        }
+        playersList[numOfPlayers - 1] = nullptr;
+        numOfPlayers--;
+        if (currentPlayerIndex >= numOfPlayers) {
+            currentPlayerIndex = 0;
+        }
+    }
+
 }

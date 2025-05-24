@@ -26,6 +26,7 @@ namespace player{
         std::string winner() const;
         void nextTurn();
         void createPlayer(const std::string& name);
+        void removePlayer(int index);
     };
 }
 

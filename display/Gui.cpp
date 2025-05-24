@@ -90,6 +90,16 @@ namespace gui{
         sanctionText.setPosition(465, 410);
         sanctionText.setFillColor(sf::Color::Black);
 
+        coupButton.setSize(sf::Vector2f(90, 50));
+        coupButton.setPosition(570, 400);
+        coupButton.setFillColor(sf::Color::Green);
+        coupText.setFont(font);
+        coupText.setCharacterSize(16);
+        coupText.setString("COUP");
+        coupText.setPosition(590, 410);
+        coupText.setFillColor(sf::Color::Black);
+
+
     }
 
     void Gui::run() {
@@ -108,30 +118,33 @@ namespace gui{
                     int mouseX = sf::Mouse::getPosition(window).x;
                     int mouseY = sf::Mouse::getPosition(window).y;
 
-                    if (gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        Player* p = game.getCurrentPlayer();
-                        if (p != nullptr) {
-                            ((GameRules*)p)->gather();
+                    Player* curr = game.getCurrentPlayer();
+                    bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
+
+                    if (!mustCoup && gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        if (curr != nullptr) {
+                            ((GameRules*)curr)->gather();
                         }
                     }
-                    if (taxButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        Player* p = game.getCurrentPlayer();
-                        if (p != nullptr) {
-                            ((GameRules*)p)->tax();
+
+                    if (!mustCoup && taxButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        if (curr != nullptr) {
+                            ((GameRules*)curr)->tax();
                         }
                     }
-                    if (bribeButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        Player* p = game.getCurrentPlayer();
-                        if (p != nullptr) {
-                            ((GameRules*)p)->bribe();
+
+                    if (!mustCoup && bribeButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        if (curr != nullptr) {
+                            ((GameRules*)curr)->bribe();
                         }
                     }
-                    if (arrestButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+
+                    if (!mustCoup && arrestButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
                         selectToArrest = true;
                         targetIndex = -1;
                     }
-                    if (selectToArrest && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
-                        Player* curr = game.getCurrentPlayer();
+
+                    if (!mustCoup && selectToArrest && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
                         if (curr != nullptr && target != curr && target->getCoins() > 0) {
                             ((GameRules*)curr)->arrest(*target);
@@ -139,21 +152,36 @@ namespace gui{
                             selectToArrest = false;
                         }
                     }
-                    if (sanctionButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+
+                    if (!mustCoup && sanctionButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
                         selectToSanction = true;
                         targetIndex = -1;
                     }
-                    if (selectToSanction && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
-                        Player* curr = game.getCurrentPlayer();
+
+                    if (!mustCoup && selectToSanction && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
                         if (curr != nullptr && target != curr && !target->getSanctioned()) {
-                            ((GameRules*)curr)->sanction(*target); // ודא שקיימת פעולה זו
+                            ((GameRules*)curr)->sanction(*target);
                             targetIndex = -1;
                             selectToSanction = false;
                         }
                     }
 
+                    if (coupButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        selectToCoup = true;
+                        targetIndex = -1;
+                    }
 
+                    if (selectToCoup && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
+                        Player* target = game.getPlayerIndex(targetIndex);
+                        if (curr != nullptr && target != curr && curr->getCoins() >= 7 && !target->isCouped()) {
+                            ((GameRules*)curr)->coup(*target);
+                            delete target;
+                            game.removePlayer(targetIndex);
+                            targetIndex = -1;
+                            selectToCoup = false;
+                        }
+                    }
                 }
             }
 
@@ -164,9 +192,11 @@ namespace gui{
             } else {
                 gameScreen();
             }
+
             window.display();
         }
     }
+
 
 
     void Gui::registrationInput(sf::Event &event) {
@@ -223,12 +253,11 @@ namespace gui{
 
     void Gui::gameScreen() {
         Player* curr = game.getCurrentPlayer();
+        bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
         showCurrTurn();
         showPlayers();
 
-        makeButton(gatherButton, gatherText);
-        makeButton(taxButton, taxText);
-        if (curr != nullptr && curr->getSanctioned()){
+        if (mustCoup || (curr != nullptr && curr->getSanctioned())) {
             gatherButton.setFillColor(sf::Color::Red);
             taxButton.setFillColor(sf::Color::Red);
         } else {
@@ -236,32 +265,41 @@ namespace gui{
             taxButton.setFillColor(sf::Color::Green);
         }
 
-
-        makeButton(bribeButton, bribeText);
-        if (curr != nullptr && curr->getCoins() > 3) {
-            bribeButton.setFillColor(sf::Color::Green);
-        } else {
+        if (mustCoup || curr == nullptr || curr->getCoins() <= 3) {
             bribeButton.setFillColor(sf::Color::Red);
-        }
-
-
-        makeButton(arrestButton, arrestText);
-        if (selectToArrest){
-            playerSelect("arrest");
-        }
-
-        makeButton(sanctionButton, sanctionText);
-        if (curr != nullptr && curr->getCoins() > 2 && !curr->getSanctioned()) {
-            sanctionButton.setFillColor(sf::Color::Green);
-            if (selectToSanction){
-                playerSelect("sanction");
-            }
         } else {
-            sanctionButton.setFillColor(sf::Color::Red);
+            bribeButton.setFillColor(sf::Color::Green);
         }
 
+        if (mustCoup || curr == nullptr) {
+            arrestButton.setFillColor(sf::Color::Red);
+        } else {
+            arrestButton.setFillColor(sf::Color::Green);
+            if (selectToArrest) playerSelect("arrest");
+        }
 
+        if (mustCoup || curr == nullptr || curr->getCoins() <= 2 || curr->getSanctioned()) {
+            sanctionButton.setFillColor(sf::Color::Red);
+        } else {
+            sanctionButton.setFillColor(sf::Color::Green);
+            if (selectToSanction) playerSelect("sanction");
+        }
+
+        if (curr != nullptr && curr->getCoins() >= 7) {
+            coupButton.setFillColor(sf::Color::Green);
+            if (selectToCoup) playerSelect("coup");
+        } else {
+            coupButton.setFillColor(sf::Color::Red);
+        }
+
+        makeButton(gatherButton, gatherText);
+        makeButton(taxButton, taxText);
+        makeButton(bribeButton, bribeText);
+        makeButton(arrestButton, arrestText);
+        makeButton(sanctionButton, sanctionText);
+        makeButton(coupButton, coupText);
     }
+
 
     void Gui::showCurrTurn() {
         Player *curr = game.getCurrentPlayer();
@@ -282,9 +320,6 @@ namespace gui{
             if (player->getExtraMove()){
                 status += ": has extra move ";
             }
-            if (player->isCouped()){
-                status += "couped ";
-            }
             if (player->isArrested()){
                 status += ": got arrested ";
             }
@@ -297,7 +332,7 @@ namespace gui{
             std::string line = player->getName() + "::     role: " + player->getRole() + " :amount of coins: " + std::to_string(player->getCoins()) + " " + status;
             sf::Text text(line, font, 20);
             text.setPosition(20,position);
-            text.setFillColor(player == game.getCurrentPlayer() ? sf::Color::Red : sf::Color::Blue);
+            text.setFillColor(player == game.getCurrentPlayer() ? sf::Color::Green : sf::Color::Red);
             window.draw(text);
             position += 30;
 
@@ -331,6 +366,8 @@ namespace gui{
             }
             else if (mode == "sanction") {
                 canBeSelected = canBeSelected && !player->getSanctioned();
+            } else if (mode == "coup") {
+                canBeSelected = canBeSelected && !player->isCouped();
             }
 
             sf::Text text(player->getName(), font, 20);

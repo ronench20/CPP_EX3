@@ -100,16 +100,8 @@ namespace player{
         }
     }
 
-    void GameRules::mustCoup() {
-        if (getCoins() >= 10){ // check if it is exactly 10 or more
-            for (int i = 0; i < boardGame->getNumOfPlayers(); ++i) {
-                Player* target = boardGame->getPlayerIndex(i);
-                if (target != this && !target->isCouped()) {
-                    coup(*target);
-                    return;
-                }
-            }
-        }
+    bool GameRules::mustCoup() const {
+        return getCoins() >= 10;
     }
 
 }

@@ -17,6 +17,7 @@ namespace gui {
 
         bool selectToArrest = false;
         bool selectToSanction = false;
+        bool selectToCoup = false;
 
 
         player::BoardGame& game;
@@ -37,6 +38,8 @@ namespace gui {
         sf::Text arrestText;
         sf::RectangleShape sanctionButton;
         sf::Text sanctionText;
+        sf::RectangleShape coupButton;
+        sf::Text coupText;
 
 
         void registrationInput(sf::Event& event);
