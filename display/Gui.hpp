@@ -12,7 +12,10 @@ namespace gui {
     class Gui {
     private:
         bool gameStarted = false;
+        int targetIndex = -1;
         std::string name;
+
+        bool selectToArrest = false;
 
         player::BoardGame& game;
         sf::RenderWindow window;
@@ -31,12 +34,16 @@ namespace gui {
         sf::RectangleShape bribeButton;
         sf::Text bribeText;
 
+        sf::RectangleShape arrestButton;
+        sf::Text arrestText;
+
         void registrationInput(sf::Event& event);
         void registration();
         void gameScreen();
         void makeButton(const sf::RectangleShape& button, const sf::Text& text);
         void showCurrTurn();
         void showPlayers();
+        void playerSelect(const std::string& mode);
 
     public:
         Gui(player::BoardGame& game);

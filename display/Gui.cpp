@@ -72,6 +72,15 @@ namespace gui{
         bribeText.setPosition(330, 410);
         bribeText.setFillColor(sf::Color::Black);
 
+        arrestButton.setSize(sf::Vector2f(120, 50));
+        arrestButton.setPosition(440, 400);
+        arrestButton.setFillColor(sf::Color::Green);
+        arrestText.setFont(font);
+        arrestText.setCharacterSize(18);
+        arrestText.setString("ARREST");
+        arrestText.setPosition(470, 410);
+        arrestText.setFillColor(sf::Color::Black);
+
     }
 
     void Gui::run() {
@@ -108,6 +117,20 @@ namespace gui{
                             ((GameRules*)p)->bribe();
                         }
                     }
+                    if (arrestButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        selectToArrest = true;
+                        targetIndex = -1;
+                    }
+                    if (selectToArrest && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
+                        Player* curr = game.getCurrentPlayer();
+                        Player* target = game.getPlayerIndex(targetIndex);
+                        if (curr != nullptr && target != curr && target->getCoins() > 0) {
+                            ((GameRules*)curr)->arrest(*target);
+                            targetIndex = -1;
+                            selectToArrest = false;
+                        }
+                    }
+
                 }
             }
 
@@ -118,7 +141,6 @@ namespace gui{
             } else {
                 gameScreen();
             }
-
             window.display();
         }
     }
@@ -184,12 +206,18 @@ namespace gui{
         makeButton(taxButton, taxText);
 
         Player* curr = game.getCurrentPlayer();
-        if (curr != nullptr && curr->getCoins() >= 3) {
+        if (curr != nullptr && curr->getCoins() > 3) {
             bribeButton.setFillColor(sf::Color::Green);
         } else {
             bribeButton.setFillColor(sf::Color::Red);
         }
+
         makeButton(bribeButton, bribeText);
+        makeButton(arrestButton, arrestText);
+        if (selectToArrest){
+            playerSelect("arrest");
+        }
+
     }
 
     void Gui::showCurrTurn() {
@@ -230,7 +258,63 @@ namespace gui{
             window.draw(text);
             position += 30;
 
+            sf::FloatRect bounds = text.getGlobalBounds();
+            int mx = sf::Mouse::getPosition(window).x;
+            int my = sf::Mouse::getPosition(window).y;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if (bounds.contains((float)mx, (float)my) &&
+                    player != game.getCurrentPlayer()) {
+                    targetIndex = i;
+                }
+            }
+            if (i == targetIndex) {
+                text.setFillColor(sf::Color::Magenta);
+            }
+
+
         }
+    }
+
+    void Gui::playerSelect(const std::string& mode) {
+        float position = 70;
+        sf::Vector2f mousePos = (sf::Vector2f)sf::Mouse::getPosition(window);
+
+        for (int i = 0; i < game.getNumOfPlayers(); ++i) {
+            Player* player = game.getPlayerIndex(i);
+            bool canBeSelected = (player != game.getCurrentPlayer());
+
+            if (mode == "arrest") {
+                canBeSelected = canBeSelected && !player->isArrested() && !player->getArrestedLastTurn() && player->getCoins() > 0;
+            }
+
+            sf::Text text(player->getName(), font, 20);
+            text.setPosition(20, position);
+            sf::FloatRect bounds = text.getGlobalBounds();
+            bool isSelected = bounds.contains(mousePos) && canBeSelected;
+            if (isSelected){
+                sf::RectangleShape highlight(sf::Vector2f(bounds.width, bounds.height));
+                highlight.setPosition(text.getPosition());
+                highlight.setFillColor(sf::Color(255, 255, 0, 100));
+                window.draw(highlight);
+            }
+            if (i == targetIndex) {
+                text.setFillColor(sf::Color::Magenta);
+            } else if (!canBeSelected) {
+                text.setFillColor(sf::Color(100, 100, 100));
+            } else {
+                text.setFillColor(sf::Color::Blue);
+            }
+            window.draw(text);
+
+            if (isSelected && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                targetIndex = i;
+            }
+            position += 30;
+        }
+        sf::Text func("Select a player to " + mode, font, 20);
+        func.setPosition(20, 20);
+        func.setFillColor(sf::Color::Yellow);
+        window.draw(func);
     }
 
 }
