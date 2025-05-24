@@ -45,41 +45,50 @@ namespace gui{
         startText.setFillColor(sf::Color::Black);
 
 
-        gatherButton.setSize(sf::Vector2f(120, 50));
+        gatherButton.setSize(sf::Vector2f(90, 50));
         gatherButton.setPosition(20, 400);
         gatherButton.setFillColor(sf::Color::Green);
         gatherText.setFont(font);
-        gatherText.setCharacterSize(18);
+        gatherText.setCharacterSize(16);
         gatherText.setString("GATHER");
-        gatherText.setPosition(40, 410);
+        gatherText.setPosition(30, 410);
         gatherText.setFillColor(sf::Color::Black);
 
-        taxButton.setSize(sf::Vector2f(120, 50));
-        taxButton.setPosition(160, 400);
+        taxButton.setSize(sf::Vector2f(90, 50));
+        taxButton.setPosition(130, 400);
         taxButton.setFillColor(sf::Color::Green);
         taxText.setFont(font);
-        taxText.setCharacterSize(18);
+        taxText.setCharacterSize(16);
         taxText.setString("TAX");
-        taxText.setPosition(200, 410);
+        taxText.setPosition(155, 410);
         taxText.setFillColor(sf::Color::Black);
 
-        bribeButton.setSize(sf::Vector2f(120, 50));
-        bribeButton.setPosition(300, 400);
+        bribeButton.setSize(sf::Vector2f(90, 50));
+        bribeButton.setPosition(240, 400);
         bribeButton.setFillColor(sf::Color::Green);
         bribeText.setFont(font);
-        bribeText.setCharacterSize(18);
+        bribeText.setCharacterSize(16);
         bribeText.setString("BRIBE");
-        bribeText.setPosition(330, 410);
+        bribeText.setPosition(260, 410);
         bribeText.setFillColor(sf::Color::Black);
 
-        arrestButton.setSize(sf::Vector2f(120, 50));
-        arrestButton.setPosition(440, 400);
+        arrestButton.setSize(sf::Vector2f(90, 50));
+        arrestButton.setPosition(350, 400);
         arrestButton.setFillColor(sf::Color::Green);
         arrestText.setFont(font);
-        arrestText.setCharacterSize(18);
+        arrestText.setCharacterSize(16);
         arrestText.setString("ARREST");
-        arrestText.setPosition(470, 410);
+        arrestText.setPosition(360, 410);
         arrestText.setFillColor(sf::Color::Black);
+
+        sanctionButton.setSize(sf::Vector2f(90, 50));
+        sanctionButton.setPosition(460, 400);
+        sanctionButton.setFillColor(sf::Color::Green);
+        sanctionText.setFont(font);
+        sanctionText.setCharacterSize(16);
+        sanctionText.setString("SANCTION");
+        sanctionText.setPosition(465, 410);
+        sanctionText.setFillColor(sf::Color::Black);
 
     }
 
@@ -130,6 +139,20 @@ namespace gui{
                             selectToArrest = false;
                         }
                     }
+                    if (sanctionButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        selectToSanction = true;
+                        targetIndex = -1;
+                    }
+                    if (selectToSanction && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
+                        Player* curr = game.getCurrentPlayer();
+                        Player* target = game.getPlayerIndex(targetIndex);
+                        if (curr != nullptr && target != curr && !target->getSanctioned()) {
+                            ((GameRules*)curr)->sanction(*target); // ודא שקיימת פעולה זו
+                            targetIndex = -1;
+                            selectToSanction = false;
+                        }
+                    }
+
 
                 }
             }
@@ -199,24 +222,44 @@ namespace gui{
     }
 
     void Gui::gameScreen() {
+        Player* curr = game.getCurrentPlayer();
         showCurrTurn();
         showPlayers();
 
         makeButton(gatherButton, gatherText);
         makeButton(taxButton, taxText);
+        if (curr != nullptr && curr->getSanctioned()){
+            gatherButton.setFillColor(sf::Color::Red);
+            taxButton.setFillColor(sf::Color::Red);
+        } else {
+            gatherButton.setFillColor(sf::Color::Green);
+            taxButton.setFillColor(sf::Color::Green);
+        }
 
-        Player* curr = game.getCurrentPlayer();
+
+        makeButton(bribeButton, bribeText);
         if (curr != nullptr && curr->getCoins() > 3) {
             bribeButton.setFillColor(sf::Color::Green);
         } else {
             bribeButton.setFillColor(sf::Color::Red);
         }
 
-        makeButton(bribeButton, bribeText);
+
         makeButton(arrestButton, arrestText);
         if (selectToArrest){
             playerSelect("arrest");
         }
+
+        makeButton(sanctionButton, sanctionText);
+        if (curr != nullptr && curr->getCoins() > 2 && !curr->getSanctioned()) {
+            sanctionButton.setFillColor(sf::Color::Green);
+            if (selectToSanction){
+                playerSelect("sanction");
+            }
+        } else {
+            sanctionButton.setFillColor(sf::Color::Red);
+        }
+
 
     }
 
@@ -285,6 +328,9 @@ namespace gui{
 
             if (mode == "arrest") {
                 canBeSelected = canBeSelected && !player->isArrested() && !player->getArrestedLastTurn() && player->getCoins() > 0;
+            }
+            else if (mode == "sanction") {
+                canBeSelected = canBeSelected && !player->getSanctioned();
             }
 
             sf::Text text(player->getName(), font, 20);

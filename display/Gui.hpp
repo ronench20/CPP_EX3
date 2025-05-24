@@ -16,6 +16,8 @@ namespace gui {
         std::string name;
 
         bool selectToArrest = false;
+        bool selectToSanction = false;
+
 
         player::BoardGame& game;
         sf::RenderWindow window;
@@ -27,15 +29,15 @@ namespace gui {
 
         sf::RectangleShape gatherButton;
         sf::Text gatherText;
-
         sf::RectangleShape taxButton;
         sf::Text taxText;
-
         sf::RectangleShape bribeButton;
         sf::Text bribeText;
-
         sf::RectangleShape arrestButton;
         sf::Text arrestText;
+        sf::RectangleShape sanctionButton;
+        sf::Text sanctionText;
+
 
         void registrationInput(sf::Event& event);
         void registration();
