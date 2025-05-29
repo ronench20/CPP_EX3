@@ -12,6 +12,7 @@ namespace player{
     void Governor::tax() {
         if (!getSanctioned()) {
             addCoins(3);
+            setDidTax(true);
         }
         boardGame->nextTurn();
     }
@@ -21,11 +22,13 @@ namespace player{
             if (target.getCoins() >= 2 && target.getRole() != "Governor") {
                 target.removeCoins(2);
                 std::cout << target.getName() << " tax has been deleted." << std::endl;
+                target.setDidTax(false);
                 boardGame->nextTurn();
             }
             else if (target.getCoins() >= 3 && target.getRole() == "Governor"){
                 target.removeCoins(3);
                 std::cout << target.getName() << " tax has been deleted." << std::endl;
+                target.setDidTax(false);
                 boardGame->nextTurn();
             }
             else {

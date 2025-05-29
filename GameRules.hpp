@@ -24,7 +24,7 @@ namespace player{
         virtual void coup(Player& target);
         void startTurn();
         bool mustCoup() const;
-
+        void skipTurn();
 
     };
 }

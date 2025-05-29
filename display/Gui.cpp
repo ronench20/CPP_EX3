@@ -4,6 +4,7 @@
 #include "../GameRules.hpp"
 #include <iostream>
 #include <stdexcept>
+#include "../RolesH/Governor.hpp"
 
 using namespace player;
 
@@ -44,6 +45,14 @@ namespace gui{
         startText.setPosition(30, 210);
         startText.setFillColor(sf::Color::Black);
 
+        skipButton.setSize(sf::Vector2f(90, 50));
+        skipButton.setPosition(590, 20);
+        skipButton.setFillColor(sf::Color::Green);
+        skipText.setFont(font);
+        skipText.setCharacterSize(16);
+        skipText.setString("SKIP TURN");
+        skipText.setPosition(595, 30);
+        skipText.setFillColor(sf::Color::Black);
 
         gatherButton.setSize(sf::Vector2f(90, 50));
         gatherButton.setPosition(20, 400);
@@ -99,6 +108,14 @@ namespace gui{
         coupText.setPosition(590, 410);
         coupText.setFillColor(sf::Color::Black);
 
+        undoTaxButton.setSize(sf::Vector2f(90, 50));
+        undoTaxButton.setPosition(20, 320);
+        undoTaxButton.setFillColor(sf::Color::Green);
+        undoTaxText.setFont(font);
+        undoTaxText.setCharacterSize(16);
+        undoTaxText.setString("UNDO TAX");
+        undoTaxText.setPosition(25, 330);
+        undoTaxText.setFillColor(sf::Color::Black);
 
     }
 
@@ -120,6 +137,12 @@ namespace gui{
 
                     Player* curr = game.getCurrentPlayer();
                     bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
+
+                    if (skipButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
+                        if (curr != nullptr) {
+                            ((GameRules*)curr)->skipTurn();
+                        }
+                    }
 
                     if (!mustCoup && gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
                         if (curr != nullptr) {
@@ -182,6 +205,23 @@ namespace gui{
                             selectToCoup = false;
                         }
                     }
+
+                    if (undoTaxButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)){
+                        if(curr != nullptr && curr->getRole() == "Governor"){
+                            selectToUndoTax = true;
+                            targetIndex = -1;
+                        }
+                    }
+                    if (selectToUndoTax && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
+                        Player* target = game.getPlayerIndex(targetIndex);
+                        if (curr != nullptr && target != curr && curr->getRole() == "Governor" && target->getDidTax()) {
+                            ((Governor*)curr)->taxBlock(*target);
+                            selectToUndoTax = false;
+                            targetIndex = -1;
+
+                        }
+                    }
+
                 }
             }
 
@@ -196,7 +236,6 @@ namespace gui{
             window.display();
         }
     }
-
 
 
     void Gui::registrationInput(sf::Event &event) {
@@ -257,6 +296,8 @@ namespace gui{
         showCurrTurn();
         showPlayers();
 
+        makeButton(skipButton, skipText);
+
         if (mustCoup || (curr != nullptr && curr->getSanctioned())) {
             gatherButton.setFillColor(sf::Color::Red);
             taxButton.setFillColor(sf::Color::Red);
@@ -292,6 +333,13 @@ namespace gui{
             coupButton.setFillColor(sf::Color::Red);
         }
 
+        if (curr != nullptr && curr->getRole() == "Governor") {
+            makeButton(undoTaxButton, undoTaxText);
+            if (selectToUndoTax){
+                playerSelect("undo tax");
+            }
+        }
+
         makeButton(gatherButton, gatherText);
         makeButton(taxButton, taxText);
         makeButton(bribeButton, bribeText);
@@ -324,10 +372,13 @@ namespace gui{
                 status += ": got arrested ";
             }
             if (player->getSanctioned()){
-                status += "sanctioned ";
+                status += ": sanctioned ";
             }
             if (player->isSpied()){
-                status += "spied ";
+                status += ": spied ";
+            }
+            if (player->getDidTax()){
+                status += ": did tax ";
             }
             std::string line = player->getName() + "::     role: " + player->getRole() + " :amount of coins: " + std::to_string(player->getCoins()) + " " + status;
             sf::Text text(line, font, 20);
@@ -368,6 +419,9 @@ namespace gui{
                 canBeSelected = canBeSelected && !player->getSanctioned();
             } else if (mode == "coup") {
                 canBeSelected = canBeSelected && !player->isCouped();
+            }
+            else if (mode == "undoTax"){
+                canBeSelected = canBeSelected && player->getDidTax();
             }
 
             sf::Text text(player->getName(), font, 20);

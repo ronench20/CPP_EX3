@@ -104,4 +104,8 @@ namespace player{
         return getCoins() >= 10;
     }
 
+    void GameRules::skipTurn(){
+        boardGame->nextTurn();
+    }
+
 }

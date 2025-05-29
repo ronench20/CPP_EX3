@@ -19,6 +19,8 @@ namespace gui {
         bool selectToSanction = false;
         bool selectToCoup = false;
 
+        bool selectToUndoTax = false;
+
 
         player::BoardGame& game;
         sf::RenderWindow window;
@@ -28,6 +30,9 @@ namespace gui {
         sf::RectangleShape roleButton, startButton;
         sf::Text roleText, startText;
 
+
+        sf::RectangleShape skipButton;
+        sf::Text skipText;
         sf::RectangleShape gatherButton;
         sf::Text gatherText;
         sf::RectangleShape taxButton;
@@ -40,6 +45,9 @@ namespace gui {
         sf::Text sanctionText;
         sf::RectangleShape coupButton;
         sf::Text coupText;
+
+        sf::RectangleShape undoTaxButton;
+        sf::Text undoTaxText;
 
 
         void registrationInput(sf::Event& event);
