@@ -100,6 +100,14 @@ namespace player {
                 }
             }
         }
+        if (current != nullptr && current->getRole() == "Spy")
+        {
+            Spy* spy = dynamic_cast<Spy*>(current);
+            if (spy){
+                spy->resetSpiedThisTurn();
+            }
+        }
+        
     }
 
     void BoardGame::createPlayer(const string &name) {

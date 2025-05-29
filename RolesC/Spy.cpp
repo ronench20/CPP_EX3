@@ -1,6 +1,7 @@
 //ronen.chereshn@msmail.ariel.ac.il
 
 #include "../RolesH/Spy.hpp"
+#include <stdexcept>
 
 namespace player{
 
@@ -12,8 +13,21 @@ namespace player{
         return other.getCoins();
     }
 
-    void Spy::arrestBlock(Player &target) {
-        target.setSpied(true);
-        target.setSpiedUntilNextTurn(true);
+    void Spy::arrestBlock(Player &target){
+        if (getSpiedThisTurn()){
+             std::cout << ("You have already spied this turn.\n");
+        }else{
+            target.setSpied(true);
+            target.setSpiedUntilNextTurn(true);
+            spiedThisTurn = true;
+        }
+    }
+
+    void Spy::resetSpiedThisTurn() {
+        spiedThisTurn = false;
+    }
+
+    bool Spy::getSpiedThisTurn() const {
+        return spiedThisTurn;
     }
 }

@@ -20,6 +20,8 @@ namespace gui {
         bool selectToCoup = false;
 
         bool selectToUndoTax = false;
+        bool selectToSpy = false;
+        bool showSpyMessage = false;
 
 
         player::BoardGame& game;
@@ -48,11 +50,17 @@ namespace gui {
 
         sf::RectangleShape undoTaxButton;
         sf::Text undoTaxText;
+        sf::RectangleShape spyButton;
+        sf::Text spyText;
+
+        sf::Text spyMessege;
+        sf::Clock spyMessegeTimer;
 
 
         void registrationInput(sf::Event& event);
         void registration();
-        void gameScreen();
+        void showButtons();
+        void showMessage();
         void makeButton(const sf::RectangleShape& button, const sf::Text& text);
         void showCurrTurn();
         void showPlayers();

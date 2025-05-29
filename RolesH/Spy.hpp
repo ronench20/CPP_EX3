@@ -7,10 +7,14 @@
 
 namespace player{
     class Spy : public GameRules{
+    private:
+        bool spiedThisTurn = false;
     public:
         Spy(const std::string& name, BoardGame* boardGame);
         int getCoins(Player &other) const;
         void arrestBlock(Player &target);
+        void resetSpiedThisTurn();
+        bool getSpiedThisTurn() const;
     };
 }
 

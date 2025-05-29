@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "../RolesH/Governor.hpp"
+#include "../RolesH/Spy.hpp"
 
 using namespace player;
 
@@ -117,6 +118,20 @@ namespace gui{
         undoTaxText.setPosition(25, 330);
         undoTaxText.setFillColor(sf::Color::Black);
 
+        spyButton.setSize(sf::Vector2f(90, 50));
+        spyButton.setPosition(20, 320);
+        spyButton.setFillColor(sf::Color::Green);
+        spyText.setFont(font);
+        spyText.setCharacterSize(16);
+        spyText.setString("SPY");
+        spyText.setPosition(30, 330);
+        spyText.setFillColor(sf::Color::Black);
+
+        spyMessege.setFont(font);
+        spyMessege.setCharacterSize(20);
+        spyMessege.setPosition(20, 280);
+        spyMessege.setFillColor(sf::Color::Yellow);
+
     }
 
     void Gui::run() {
@@ -221,6 +236,24 @@ namespace gui{
 
                         }
                     }
+                    if (spyButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)){
+                        if (curr != nullptr && curr->getRole() == "Spy") {
+                            selectToSpy = true;
+                            targetIndex = -1;
+                        }
+                    }
+                    if (selectToSpy && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
+                        Player* target = game.getPlayerIndex(targetIndex);
+                        if (curr != nullptr && target != curr && curr->getRole() == "Spy") {
+                            int coins = ((Spy*)curr)->getCoins(*target);
+                            spyMessege.setString("You spied on " + target->getName() + " and found out they have " + std::to_string(coins) + " coins.");
+                            spyMessegeTimer.restart();
+                            showSpyMessage = true;
+                            ((Spy*)curr)->arrestBlock(*target);
+                            selectToSpy = false;
+                            targetIndex = -1;
+                        }
+                    }
 
                 }
             }
@@ -230,9 +263,10 @@ namespace gui{
             if (!gameStarted) {
                 registration();
             } else {
-                gameScreen();
+                showButtons();
+                showMessage();
+  
             }
-
             window.display();
         }
     }
@@ -290,7 +324,7 @@ namespace gui{
         }
     }
 
-    void Gui::gameScreen() {
+    void Gui::showButtons() {
         Player* curr = game.getCurrentPlayer();
         bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
         showCurrTurn();
@@ -312,7 +346,7 @@ namespace gui{
             bribeButton.setFillColor(sf::Color::Green);
         }
 
-        if (mustCoup || curr == nullptr) {
+        if (mustCoup || curr == nullptr || curr->isSpied()) {
             arrestButton.setFillColor(sf::Color::Red);
         } else {
             arrestButton.setFillColor(sf::Color::Green);
@@ -340,12 +374,37 @@ namespace gui{
             }
         }
 
+        if (curr != nullptr && curr->getRole() == "Spy") {
+            Spy* spy = dynamic_cast<Spy*>(curr);
+            if (spy != nullptr && !spy->getSpiedThisTurn()) {
+                spyButton.setFillColor(sf::Color::Green);
+            } else {
+                spyButton.setFillColor(sf::Color::Red);
+            }
+
+            makeButton(spyButton, spyText);
+
+            if (selectToSpy && spy != nullptr && !spy->getSpiedThisTurn()) {
+                playerSelect("spy");
+            }
+        }
+
+
         makeButton(gatherButton, gatherText);
         makeButton(taxButton, taxText);
         makeButton(bribeButton, bribeText);
         makeButton(arrestButton, arrestText);
         makeButton(sanctionButton, sanctionText);
         makeButton(coupButton, coupText);
+    }
+
+    void Gui::showMessage(){
+        if (showSpyMessage && spyMessegeTimer.getElapsedTime().asSeconds() < 3) {
+            window.draw(spyMessege);
+        } else{
+            showSpyMessage = false;
+        }
+        
     }
 
 
@@ -422,6 +481,9 @@ namespace gui{
             }
             else if (mode == "undoTax"){
                 canBeSelected = canBeSelected && player->getDidTax();
+            }
+            else if (mode == "spy") {
+                canBeSelected = canBeSelected;
             }
 
             sf::Text text(player->getName(), font, 20);
