@@ -145,12 +145,63 @@ namespace gui{
         investText.setPosition(30, 330);
         investText.setFillColor(sf::Color::Black);
 
+        preventCoupButton.setSize({120, 40});
+        preventCoupButton.setPosition({200, 200});
+        preventCoupText.setFont(font);
+        preventCoupText.setCharacterSize(16);
+        preventCoupText.setString("PREVENT");
+        preventCoupText.setPosition({215, 210});
+
+        allowCoupButton.setSize({160, 40});
+        allowCoupButton.setPosition({350, 200});
+        allowCoupText.setFont(font);
+        allowCoupText.setCharacterSize(16);
+        allowCoupText.setString("DON'T PREVENT");
+        allowCoupText.setPosition({355, 210});
+
+        decisionLabel.setFont(font);
+        decisionLabel.setCharacterSize(18);
+        decisionLabel.setFillColor(sf::Color::Yellow);
+        decisionLabel.setPosition({200, 160});
     }
 
     void Gui::run() {
         while (window.isOpen()) {
             sf::Event event;
             while (window.pollEvent(event)) {
+                if (game.getAwaitingCoup()) {
+                    int mx = sf::Mouse::getPosition(window).x;
+                    int my = sf::Mouse::getPosition(window).y;
+                    // מי General הבא:
+                    int genIdx = game.getCurrGeneralIndex();
+                    Player* gen = game.getPlayerIndex(genIdx);
+                    decisionLabel.setString(gen->getName() + ", block this coup?");
+
+                    if (game.canGeneralPreventCoup()) {
+                        preventCoupButton.setFillColor(sf::Color::Green);
+                    } else {
+                        preventCoupButton.setFillColor(sf::Color::Red);
+                    }
+                    allowCoupButton.setFillColor(sf::Color::Green);
+
+                    window.draw(decisionLabel);
+                    window.draw(preventCoupButton);
+                    window.draw(preventCoupText);
+                    window.draw(allowCoupButton);
+                    window.draw(allowCoupText);
+
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        if (preventCoupButton.getGlobalBounds().contains(mx, my)
+                            && game.canGeneralPreventCoup()) {
+                            game.coupDecision(true);
+                        }
+                        if (allowCoupButton.getGlobalBounds().contains(mx, my)) {
+                            game.coupDecision(false);
+                        }
+                    }
+                    continue;
+                }
+
                 if (event.type == sf::Event::Closed) {
                     window.close();
                 }
@@ -226,9 +277,7 @@ namespace gui{
                     if (selectToCoup && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
                         if (curr != nullptr && target != curr && curr->getCoins() >= 7 && !target->isCouped()) {
-                            ((GameRules*)curr)->coup(*target);
-                            delete target;
-                            game.removePlayer(targetIndex);
+                            game.coupApproval(game.getCurrentPlayerIndex(), targetIndex);
                             targetIndex = -1;
                             selectToCoup = false;
                         }
@@ -346,6 +395,16 @@ namespace gui{
 
     void Gui::showButtons() {
         Player* curr = game.getCurrentPlayer();
+
+        if (game.getAwaitingCoup()) {
+            window.draw(decisionLabel);
+            window.draw(preventCoupButton);
+            window.draw(preventCoupText);
+            window.draw(allowCoupButton);
+            window.draw(allowCoupText);
+            return;
+        }
+
         bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
         showCurrTurn();
         showPlayers();

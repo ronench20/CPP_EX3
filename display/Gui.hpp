@@ -55,6 +55,11 @@ namespace gui {
         sf::Text spyText;
         sf::RectangleShape investButton;
         sf::Text investText;
+        sf::RectangleShape preventCoupButton;
+        sf::Text preventCoupText;
+        sf::RectangleShape allowCoupButton;
+        sf::Text allowCoupText;
+        sf::Text decisionLabel; 
 
         sf::Text spyMessege;
         sf::Clock spyMessegeTimer;

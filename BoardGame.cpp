@@ -53,6 +53,11 @@ namespace player {
         return playersList[index];
     }
 
+    int BoardGame::getCurrentPlayerIndex() const {
+    return currentPlayerIndex;
+    }
+
+
     string BoardGame::players() const {
         string names;
         for (int i = 0; i < numOfPlayers; i++) {
@@ -147,6 +152,80 @@ namespace player {
         if (currentPlayerIndex >= numOfPlayers) {
             currentPlayerIndex = 0;
         }
+    }
+
+    bool BoardGame::getAwaitingCoup() const {
+        return awaitingCoup;
+    }
+
+    int BoardGame::getCurrGeneralIndex() const {
+        return generals[nextGeneralIndex];
+    }
+
+    bool BoardGame::canGeneralPreventCoup() const {
+        int i =generals[nextGeneralIndex];
+        return playersList[i]->getCoins() >= 5;
+    }
+
+    void BoardGame::coupApproval(int attackerIndex, int targetIndex) {
+        awaitingCoup = true;
+        this->attackerIndex = attackerIndex;
+        this->targetIndex = targetIndex;
+        numOfGenerals = 0;
+
+        for (int i = 0; i < numOfPlayers; ++i) {
+            if (playersList[i]->getRole() == "General" && !playersList[i]->isCouped()) {
+                generals[numOfGenerals++] = i;
+            }
+        }
+
+        nextGeneralIndex = 0;
+        if (numOfGenerals == 0){
+            GameRules* attacker = dynamic_cast<GameRules*>(playersList[attackerIndex]);
+            attacker->coup(*playersList[targetIndex]);
+            clearApproval();
+        }
+    }
+
+    void BoardGame::coupDecision(bool prevent){
+        if (!awaitingCoup) {
+            cout << "No coup in progress." << endl;
+            return;
+        }
+        Player* attacker = playersList[attackerIndex];
+
+        if (prevent) {
+            attacker->removeCoins(7);
+            nextTurn();
+            clearApproval();
+        } else {
+            ++nextGeneralIndex;
+            if (nextGeneralIndex >= numOfGenerals) {
+                if (attacker->getCoins() >= 7) {
+                    Player* target = playersList[targetIndex];
+                    target->setCouped(true);
+                    attacker->removeCoins(7);
+                    delete target;
+                    removePlayer(targetIndex);
+                    nextTurn();
+                } else {
+                    cout << "Attacker doesn't have enough coins!" << endl;
+                }
+                clearApproval();
+            } else {
+                Player* general = playersList[generals[nextGeneralIndex]];
+                cout << "General " << general->getName() << " can prevent the coup." << endl;
+            }
+        } 
+    }
+
+
+    void BoardGame::clearApproval() {
+        awaitingCoup = false;
+        attackerIndex = -1;
+        targetIndex = -1;
+        numOfGenerals = 0;
+        nextGeneralIndex = 0;
     }
 
 }
