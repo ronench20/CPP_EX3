@@ -195,9 +195,16 @@ namespace player {
         Player* attacker = playersList[attackerIndex];
 
         if (prevent) {
-            attacker->removeCoins(7);
-            nextTurn();
-            clearApproval();
+            Player* general = playersList[generals[nextGeneralIndex]];
+            if (general->getCoins() >= 5){
+                general->removeCoins(5);
+                attacker->removeCoins(7);
+                nextTurn();
+                clearApproval();
+            }else{
+                cout << "General " << general->getName() << " doesn't have enough coins to prevent." << endl;
+            }
+
         } else {
             ++nextGeneralIndex;
             if (nextGeneralIndex >= numOfGenerals) {

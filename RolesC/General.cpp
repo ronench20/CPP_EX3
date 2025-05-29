@@ -9,16 +9,16 @@ namespace player{
         setRole("General");
     }
 
-    void General::blockCoup(player::Player &target, player::Player &attacker) {
-        if (getCoins() >= 5){
-            removeCoins(5);
-            target.setCouped(false);
-            std::cout << target.getName() << " is blocked from coup." << std::endl;
-            boardGame->nextTurn();
-        }
-        else{
-            throw std::invalid_argument("Not enough coins to block coup.");        }
-    }
+    //void General::blockCoup(player::Player &target, player::Player &attacker) {
+    //   if (getCoins() >= 5){
+    //        removeCoins(5);
+    //        target.setCouped(false);
+    //        std::cout << target.getName() << " is blocked from coup." << std::endl;
+    //        boardGame->nextTurn();
+    //    }
+    //    else{
+    //        throw std::invalid_argument("Not enough coins to block coup.");        }
+    //}
 
     void General::setArrested(bool arrested) {
         Player::setArrested(arrested);

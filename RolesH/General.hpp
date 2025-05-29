@@ -9,7 +9,7 @@ namespace player{
     class General : public GameRules{
     public:
         General(const std::string& name, BoardGame* boardGame);
-        void blockCoup(Player& target, Player& attacker);
+        //void blockCoup(Player& target, Player& attacker);
         void setArrested(bool arrested) override;
     };
 }
