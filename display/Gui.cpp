@@ -6,6 +6,10 @@
 #include <stdexcept>
 #include "../RolesH/Governor.hpp"
 #include "../RolesH/Spy.hpp"
+#include "../RolesH/Baron.hpp"
+#include "../RolesH/General.hpp"
+#include "../RolesH/Judge.hpp"
+#include "../RolesH/Merchant.hpp"
 
 using namespace player;
 
@@ -132,6 +136,15 @@ namespace gui{
         spyMessege.setPosition(20, 280);
         spyMessege.setFillColor(sf::Color::Yellow);
 
+        investButton.setSize(sf::Vector2f(90, 50));
+        investButton.setPosition(20, 320);
+        investButton.setFillColor(sf::Color::Green);
+        investText.setFont(font);
+        investText.setCharacterSize(16);
+        investText.setString("INVEST");
+        investText.setPosition(30, 330);
+        investText.setFillColor(sf::Color::Black);
+
     }
 
     void Gui::run() {
@@ -254,7 +267,14 @@ namespace gui{
                             targetIndex = -1;
                         }
                     }
-
+                    if (investButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)){
+                        if (curr != nullptr && curr->getRole() == "Baron" && curr->getCoins() >= 3) {
+                            Baron* baron = dynamic_cast<Baron*>(curr);
+                            if (baron != nullptr) {
+                                baron->invest();
+                            }
+                        }
+                    }
                 }
             }
 
@@ -386,6 +406,15 @@ namespace gui{
 
             if (selectToSpy && spy != nullptr && !spy->getSpiedThisTurn()) {
                 playerSelect("spy");
+            }
+        }
+
+        if (curr != nullptr && curr->getRole() == "Baron") {
+            makeButton(investButton, investText);
+            if (curr->getCoins() >= 3) {
+                investButton.setFillColor(sf::Color::Green);
+            } else {
+                investButton.setFillColor(sf::Color::Red);
             }
         }
 

@@ -10,7 +10,7 @@ namespace player{
     public:
         Baron(const std::string& name, BoardGame* boardGame);
         void invest();
-        void sanction(Player& attacker) override;
+        void sanction(Player& target) override;
     };
 }
 

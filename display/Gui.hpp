@@ -24,6 +24,7 @@ namespace gui {
         bool showSpyMessage = false;
 
 
+
         player::BoardGame& game;
         sf::RenderWindow window;
         sf::Font font;
@@ -52,6 +53,8 @@ namespace gui {
         sf::Text undoTaxText;
         sf::RectangleShape spyButton;
         sf::Text spyText;
+        sf::RectangleShape investButton;
+        sf::Text investText;
 
         sf::Text spyMessege;
         sf::Clock spyMessegeTimer;
