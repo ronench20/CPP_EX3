@@ -16,6 +16,8 @@ namespace gui {
         std::string name;
 
         bool selectToArrest = false;
+        bool showNoMoneyAssestMessage = false;
+        bool showAlreadyArrestedMessage = false;
         bool selectToSanction = false;
         bool selectToCoup = false;
 
@@ -61,6 +63,11 @@ namespace gui {
         sf::Text allowCoupText;
         sf::Text decisionLabel; 
 
+
+        sf::Text noMoneyAssestMessage;
+        sf::Clock noMoneyAssestTimer;
+        sf::Text alreadyArrestedMessage;
+        sf::Clock alreadyArrestedTimer;
         sf::Text spyMessege;
         sf::Clock spyMessegeTimer;
 

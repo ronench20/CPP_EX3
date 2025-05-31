@@ -95,6 +95,15 @@ namespace gui{
         arrestText.setPosition(360, 410);
         arrestText.setFillColor(sf::Color::Black);
 
+        noMoneyAssestMessage.setFont(font);
+        noMoneyAssestMessage.setCharacterSize(20);
+        noMoneyAssestMessage.setPosition(20, 280);
+        noMoneyAssestMessage.setFillColor(sf::Color::Yellow);
+        alreadyArrestedMessage.setFont(font);
+        alreadyArrestedMessage.setCharacterSize(20);
+        alreadyArrestedMessage.setPosition(20, 280);
+        alreadyArrestedMessage.setFillColor(sf::Color::Yellow);
+
         sanctionButton.setSize(sf::Vector2f(90, 50));
         sanctionButton.setPosition(460, 400);
         sanctionButton.setFillColor(sf::Color::Green);
@@ -172,7 +181,6 @@ namespace gui{
                 if (game.getAwaitingCoup()) {
                     int mx = sf::Mouse::getPosition(window).x;
                     int my = sf::Mouse::getPosition(window).y;
-                    // מי General הבא:
                     int genIdx = game.getCurrGeneralIndex();
                     Player* gen = game.getPlayerIndex(genIdx);
                     decisionLabel.setString(gen->getName() + ", block this coup?");
@@ -248,10 +256,22 @@ namespace gui{
 
                     if (!mustCoup && selectToArrest && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
-                        if (curr != nullptr && target != curr && target->getCoins() > 0) {
+                        if (curr != nullptr && target != curr && target->getCoins() > 0 && !target->isArrested()) {
                             ((GameRules*)curr)->arrest(*target);
                             targetIndex = -1;
                             selectToArrest = false;
+                        }else if (curr != nullptr && target != curr && target->getCoins() <= 0) {
+                            showNoMoneyAssestMessage = true;
+                            noMoneyAssestMessage.setString("You can't arrest " + target->getName() + " because they have no money.");
+                            noMoneyAssestTimer.restart();
+                            selectToArrest = false;
+                            targetIndex = -1;
+                        }else if (curr != nullptr && target != curr && target->isArrested()) {
+                            showAlreadyArrestedMessage = true;
+                            alreadyArrestedMessage.setString("You can't arrest " + target->getName() + " because they are already arrested.");
+                            alreadyArrestedTimer.restart();
+                            selectToArrest = false;
+                            targetIndex = -1;
                         }
                     }
 
@@ -491,6 +511,16 @@ namespace gui{
             window.draw(spyMessege);
         } else{
             showSpyMessage = false;
+        }
+        if (showNoMoneyAssestMessage && noMoneyAssestTimer.getElapsedTime().asSeconds() < 3) {
+            window.draw(noMoneyAssestMessage);
+        } else {
+            showNoMoneyAssestMessage = false;
+        }
+        if (showAlreadyArrestedMessage && alreadyArrestedTimer.getElapsedTime().asSeconds() < 3) {
+            window.draw(alreadyArrestedMessage);
+        } else {
+            showAlreadyArrestedMessage = false;
         }
         
     }
