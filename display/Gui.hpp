@@ -20,6 +20,7 @@ namespace gui {
         bool showAlreadyArrestedMessage = false;
         bool selectToSanction = false;
         bool selectToCoup = false;
+        bool showMerchantArrestedMessage = false;
 
         bool selectToUndoTax = false;
         bool selectToSpy = false;
@@ -68,14 +69,15 @@ namespace gui {
         sf::Text approveBribeText;
         sf::Text bribeLabel;
 
-
-
         sf::Text noMoneyAssestMessage;
         sf::Clock noMoneyAssestTimer;
         sf::Text alreadyArrestedMessage;
         sf::Clock alreadyArrestedTimer;
         sf::Text spyMessege;
         sf::Clock spyMessegeTimer;
+        sf::Text merchantArrestedLabel;
+        sf::Clock merchantArrestedTimer;
+
 
 
         void registrationInput(sf::Event& event);

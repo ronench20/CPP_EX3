@@ -18,9 +18,9 @@ namespace player{
         }
     }
 
-    void Baron::sanction(Player &target) {
-        GameRules::sanction(target);
-        addCoins(1);
-    }
+    //void Baron::sanction(Player &target) {
+    //    GameRules::sanction(target);
+    //    addCoins(1);
+    //}
 
 }

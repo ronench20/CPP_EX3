@@ -10,7 +10,7 @@ namespace player{
         Merchant(const std::string& name, BoardGame* boardGame);
         void startTurn() override;
         void extraCoin();
-        void setArrested(bool arrested) override;
+        //void setArrested(bool arrested) override;
 
     };
 }

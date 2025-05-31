@@ -62,12 +62,24 @@ namespace player{
             } else if (isSpied()) {
                 cout << target.getName() << " is spied." << endl;
 
-            } else {
+            }else if (target.getRole() == "Merchant"){
+                if (target.getCoins() < 2) {
+                    throw std::invalid_argument("Not enough coins to pay the arrest fee.");
+                } else {
+                    target.setArrested(true);
+                    target.setArrestedLastTurn(true);
+                    target.removeCoins(2);
+                    boardGame->nextTurn();
+                    std::cout << getName() << " was arrested and paid 2 coins to the bank." << std::endl;
+                }
+            }
+             else {
                 target.setArrested(true);
                 target.setArrestedLastTurn(true);
                 target.removeCoins(1);
                 addCoins(1);
                 boardGame->nextTurn();
+                std::cout << getName() << " arrested " << target.getName() << " and took 1 coin." << std::endl;
 
             }
         }
@@ -81,6 +93,9 @@ namespace player{
             boardGame->nextTurn();
         }
         else if (target.getRole() != "Judge" && getCoins() >= 3) {
+            if (target.getRole() == "Baron"){
+                target.addCoins(1);
+            }
             removeCoins(3);
             target.setSanctioned(true);
             target.setSanctionedUntilNextTurn(true);

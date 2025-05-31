@@ -116,26 +116,26 @@ namespace player {
     }
 
     void BoardGame::createPlayer(const string &name) {
-        int i = rand() % 6;
+        int i = rand() % 3;
         Player* player1 = nullptr;
 
         if (i == 0){
             player1 = new Baron(name, this);
-        } else if (i == 1){
-            player1 = new General(name, this);
+        //} else if (i == 1){
+        //    player1 = new General(name, this);
+        //}
+        //else if (i == 2){
+        //    player1 = new Governor(name, this);
         }
-        else if (i == 2){
-            player1 = new Governor(name, this);
-        }
-        else if (i == 3){
+        else if (i == 1){
             player1 = new Judge(name, this);
         }
-        else if (i == 4){
+        else if (i == 2){
             player1 = new Merchant(name, this);
         }
-        else if (i == 5){
-            player1 = new Spy(name, this);
-        }
+        //else if (i == 3){
+        //    player1 = new Spy(name, this);
+        //}
         addPlayer(player1);
         cout << "player added" << endl;
     }
@@ -196,17 +196,14 @@ namespace player {
 
         if (prevent) {
             Player* general = playersList[generals[nextGeneralIndex]];
-            if (general->getCoins() >= 5){
-                general->removeCoins(5);
-                attacker->removeCoins(7);
-                nextTurn();
+            General* generalPlayer = dynamic_cast<General*>(general);
+            if (generalPlayer != nullptr){
+                generalPlayer->blockCoup(*attacker);
                 clearApproval();
-            }else{
-                cout << "General " << general->getName() << " doesn't have enough coins to prevent." << endl;
             }
 
         } else {
-            ++nextGeneralIndex;
+            nextGeneralIndex++;
             if (nextGeneralIndex >= numOfGenerals) {
                 if (attacker->getCoins() >= 7) {
                     Player* target = playersList[targetIndex];

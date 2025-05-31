@@ -194,6 +194,11 @@ namespace gui{
         bribeLabel.setFillColor(sf::Color::Yellow);
         bribeLabel.setPosition({200, 220});
 
+        merchantArrestedLabel.setFont(font);
+        merchantArrestedLabel.setCharacterSize(18);
+        merchantArrestedLabel.setFillColor(sf::Color::Yellow);
+        merchantArrestedLabel.setPosition({20, 280});
+
     }
 
     void Gui::run() {
@@ -306,11 +311,11 @@ namespace gui{
 
                     if (!mustCoup && selectToArrest && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
-                        if (curr != nullptr && target != curr && target->getCoins() > 0 && !target->isArrested()) {
+                        if (curr != nullptr && target != curr && target->getCoins() > 0 && !target->isArrested() && target->getRole() != "Merchant") {
                             ((GameRules*)curr)->arrest(*target);
                             targetIndex = -1;
                             selectToArrest = false;
-                        }else if (curr != nullptr && target != curr && target->getCoins() <= 0) {
+                        }else if (curr != nullptr && target != curr && target->getCoins() <= 0 && target->getRole() != "Merchant") {
                             showNoMoneyAssestMessage = true;
                             noMoneyAssestMessage.setString("You can't arrest " + target->getName() + " because they have no money.");
                             noMoneyAssestTimer.restart();
@@ -322,6 +327,18 @@ namespace gui{
                             alreadyArrestedTimer.restart();
                             selectToArrest = false;
                             targetIndex = -1;
+                        }else if (curr != nullptr && target != curr && target->getRole() == "Merchant") {
+                            if (target->getCoins() < 2){
+                                showMerchantArrestedMessage = true;
+                                merchantArrestedLabel.setString("You can't arrest " + target->getName() + " because they are a Merchant with <2 coins.");
+                                merchantArrestedTimer.restart();
+                                selectToArrest = false;
+                                targetIndex = -1;
+                            }else{
+                                ((GameRules*)curr)->arrest(*target);
+                                targetIndex = -1;
+                                selectToArrest = false;
+                            }
                         }
                     }
 
@@ -579,6 +596,11 @@ namespace gui{
             window.draw(alreadyArrestedMessage);
         } else {
             showAlreadyArrestedMessage = false;
+        }
+        if (showMerchantArrestedMessage && merchantArrestedTimer.getElapsedTime().asSeconds() < 3) {
+            window.draw(merchantArrestedLabel);
+        } else {
+            showMerchantArrestedMessage = false;
         }
         
     }

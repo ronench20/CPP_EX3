@@ -13,7 +13,6 @@ namespace player {
         bool arrested = false;
         bool sanctioned = false;
         bool couped = false;
-        void addCoins(int amount);
         bool sanctionedUntilNextTurn = false;
         bool arrestedLastTurn = false;
         bool extraMove = false;
@@ -32,6 +31,7 @@ namespace player {
         std::string getRole() const;
         void setRole(std::string role);
         int getCoins() const;
+        void addCoins(int amount);
         bool isArrested() const;
         void setArrestedLastTurn(bool value);
         bool getArrestedLastTurn() const;
