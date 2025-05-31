@@ -39,8 +39,10 @@ namespace player{
         if (getCoins() >= 4) {
             removeCoins(4);
             setExtraMove(true);
+            setBribeBlocked(false);
+            boardGame->bribeApproval(boardGame->getCurrentPlayerIndex());
         } else {
-            cout << "Not enough coins to bribe." << endl;
+            std::cout << "Not enough coins to bribe." << std::endl;
         }
     }
 
@@ -106,6 +108,14 @@ namespace player{
 
     void GameRules::skipTurn(){
         boardGame->nextTurn();
+    }
+
+    bool GameRules::getBribeBlocked() const {
+        return bribeBlocked;
+    }
+
+    void GameRules::setBribeBlocked(bool value) {
+        bribeBlocked = value;
     }
 
 }

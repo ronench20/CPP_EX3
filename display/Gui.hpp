@@ -62,6 +62,12 @@ namespace gui {
         sf::RectangleShape allowCoupButton;
         sf::Text allowCoupText;
         sf::Text decisionLabel; 
+        sf::RectangleShape cancelBribeButton;
+        sf::RectangleShape approveBribeButton;
+        sf::Text cancelBribeText;
+        sf::Text approveBribeText;
+        sf::Text bribeLabel;
+
 
 
         sf::Text noMoneyAssestMessage;

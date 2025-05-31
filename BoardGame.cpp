@@ -226,13 +226,72 @@ namespace player {
         } 
     }
 
-
     void BoardGame::clearApproval() {
         awaitingCoup = false;
         attackerIndex = -1;
         targetIndex = -1;
         numOfGenerals = 0;
         nextGeneralIndex = 0;
+    }
+
+    bool BoardGame::getAwaitingBribe() const {
+        return awaitingBribe;
+    }
+
+    int BoardGame::getCurrJudgeIndex() const {
+        return judges[nextJudgeIndex];
+    }
+
+    void BoardGame::bribeApproval(int bribeIndex){
+        awaitingBribe = true;
+        this->briberIndex = bribeIndex;
+        numOfJudges = 0;
+
+        for (int i = 0; i < numOfPlayers; ++i) {
+            if (playersList[i]->getRole() == "Judge" && !playersList[i]->isCouped()) {
+                judges[numOfJudges++] = i;
+            }
+        }
+
+        nextJudgeIndex = 0;
+        if (numOfJudges == 0)
+        {
+            clearBribeApproval();
+        }
+        
+    }
+
+    void BoardGame::bribeDecision(bool prevent){
+        if (!awaitingBribe) {
+            cout << "No bribe in progress." << endl;
+            return;
+        }
+        Player* briber = playersList[briberIndex];
+        Player* judge = playersList[judges[nextJudgeIndex]];
+
+        if (prevent) {
+            Judge* judgePlayer = dynamic_cast<Judge*>(judge);
+            GameRules* rules = dynamic_cast<GameRules*>(briber);
+            if (judgePlayer != nullptr && rules != nullptr){
+                judgePlayer->blockBribe(*briber);
+                rules->setBribeBlocked(true);
+            }
+            clearBribeApproval();
+            return;
+        }
+        nextJudgeIndex++;
+        if (nextJudgeIndex >= numOfJudges){
+            clearBribeApproval();
+        }
+          
+
+    }
+    void BoardGame::clearBribeApproval() {
+        awaitingBribe = false;
+        briberIndex = -1;
+        targetJudgeIndex = -1;
+        numOfJudges = 0;
+        nextJudgeIndex = 0;
     }
 
 }

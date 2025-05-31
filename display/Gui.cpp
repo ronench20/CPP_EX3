@@ -28,7 +28,7 @@ namespace gui{
         nameText.setFont(font);
         nameText.setCharacterSize(20);
         nameText.setPosition(20, 50);
-        nameText.setFillColor(sf::Color::Yellow);
+        nameText.setFillColor(sf::Color::White);
 
         roleButton.setSize(sf::Vector2f(222, 50));
         roleButton.setPosition(20, 100);
@@ -172,12 +172,35 @@ namespace gui{
         decisionLabel.setCharacterSize(18);
         decisionLabel.setFillColor(sf::Color::Yellow);
         decisionLabel.setPosition({200, 160});
+
+        cancelBribeButton.setSize({120, 40});
+        cancelBribeButton.setPosition({200, 260});
+        cancelBribeButton.setFillColor(sf::Color::Green);
+        cancelBribeText.setFont(font);
+        cancelBribeText.setCharacterSize(16);
+        cancelBribeText.setString("CANCEL BRIBE");
+        cancelBribeText.setPosition({205, 270});
+
+        approveBribeButton.setSize({160, 40});
+        approveBribeButton.setPosition({350, 260});
+        approveBribeButton.setFillColor(sf::Color::Green);
+        approveBribeText.setFont(font);
+        approveBribeText.setCharacterSize(16);
+        approveBribeText.setString("ALLOW BRIBE");
+        approveBribeText.setPosition({355, 270});
+
+        bribeLabel.setFont(font);
+        bribeLabel.setCharacterSize(18);
+        bribeLabel.setFillColor(sf::Color::Yellow);
+        bribeLabel.setPosition({200, 220});
+
     }
 
     void Gui::run() {
         while (window.isOpen()) {
             sf::Event event;
             while (window.pollEvent(event)) {
+
                 if (game.getAwaitingCoup()) {
                     int mx = sf::Mouse::getPosition(window).x;
                     int my = sf::Mouse::getPosition(window).y;
@@ -209,6 +232,33 @@ namespace gui{
                     }
                     continue;
                 }
+
+                if (game.getAwaitingBribe()) {
+                    int mx = sf::Mouse::getPosition(window).x;
+                    int my = sf::Mouse::getPosition(window).y;
+                    int judgeIdx = game.getCurrJudgeIndex();
+                    Player* judge = game.getPlayerIndex(judgeIdx);
+
+                    bribeLabel.setString(judge->getName() + ", cancel the bribe?");
+                    window.clear();
+                    window.draw(bribeLabel);
+                    window.draw(cancelBribeButton);
+                    window.draw(cancelBribeText);
+                    window.draw(approveBribeButton);
+                    window.draw(approveBribeText);
+                    window.display();
+
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        if (cancelBribeButton.getGlobalBounds().contains(mx, my)) {
+                            game.bribeDecision(true);
+                        }
+                        if (approveBribeButton.getGlobalBounds().contains(mx, my)) {
+                            game.bribeDecision(false);
+                        }
+                    }
+                    continue;
+                }
+
 
                 if (event.type == sf::Event::Closed) {
                     window.close();
@@ -424,6 +474,14 @@ namespace gui{
             window.draw(allowCoupText);
             return;
         }
+        if (game.getAwaitingBribe()) {
+            window.draw(bribeLabel);
+            window.draw(cancelBribeButton);
+            window.draw(cancelBribeText);
+            window.draw(approveBribeButton);
+            window.draw(approveBribeText);
+            return;
+        }
 
         bool mustCoup = (curr != nullptr && ((GameRules*)curr)->mustCoup());
         showCurrTurn();
@@ -533,7 +591,7 @@ namespace gui{
         }
         sf::Text title(curr -> getName() + "'s turn", font, 20);
         title.setPosition(20, 20);
-        title.setFillColor(sf::Color::Yellow);
+        title.setFillColor(sf::Color::White);
         window.draw(title);
     }
 
@@ -629,7 +687,7 @@ namespace gui{
             position += 30;
         }
         sf::Text func("Select a player to " + mode, font, 20);
-        func.setPosition(20, 20);
+        func.setPosition(20, 42);
         func.setFillColor(sf::Color::Yellow);
         window.draw(func);
     }

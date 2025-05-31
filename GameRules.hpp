@@ -13,6 +13,7 @@ namespace player{
     class GameRules : public Player{
     protected:
         BoardGame* boardGame;
+        bool bribeBlocked = false;
 
     public:
         GameRules(const std::string& name, BoardGame* boardGame);
@@ -25,6 +26,8 @@ namespace player{
         void startTurn();
         bool mustCoup() const;
         void skipTurn();
+        bool getBribeBlocked() const;
+        void setBribeBlocked(bool value);
 
     };
 }

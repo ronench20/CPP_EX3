@@ -5,8 +5,6 @@
 
 #include "../GameRules.hpp"
 
-
-// Judge class is not working yet
 namespace player{
     class Judge : public GameRules{
     public:

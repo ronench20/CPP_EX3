@@ -22,6 +22,13 @@ namespace player{
         int numOfGenerals = 0;
         int nextGeneralIndex = 0;
 
+        int judges[6];
+        bool awaitingBribe = false;
+        int briberIndex = -1;
+        int targetJudgeIndex = -1;
+        int numOfJudges = 0;
+        int nextJudgeIndex = 0;
+
     public:
         BoardGame();
         void addPlayer(Player* player);
@@ -42,6 +49,12 @@ namespace player{
         void coupApproval(int attackerIndex, int targetIndex);
         void coupDecision(bool prevent);
         void clearApproval();
+
+        bool getAwaitingBribe() const;
+        int getCurrJudgeIndex() const;
+        void bribeApproval(int briberIndex);
+        void bribeDecision(bool prevent);
+        void clearBribeApproval();
     };
 }
 
