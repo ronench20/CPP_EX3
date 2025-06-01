@@ -32,13 +32,15 @@ namespace player{
     public:
         BoardGame();
         void addPlayer(Player* player);
-        std::string turn() const;
+        std::string turn();
         Player* getCurrentPlayer() const;
         int getNumOfPlayers() const;
         Player* getPlayerIndex(int index) const;
         int getCurrentPlayerIndex() const;
         std::string players() const;
         std::string winner() const;
+        void endGame();
+        bool hasWinner() const;
         void nextTurn();
         void createPlayer(const std::string& name);
         void removePlayer(int index);

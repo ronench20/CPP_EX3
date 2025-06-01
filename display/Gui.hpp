@@ -81,6 +81,10 @@ namespace gui {
         sf::Text judgeSanctionLabel;
         sf::Clock judgeSanctionTimer;
 
+        sf::Text victoryText;
+        sf::Clock victoryTimer;
+        sf::Event event;
+
 
 
         void registrationInput(sf::Event& event);

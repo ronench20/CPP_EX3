@@ -28,8 +28,8 @@ namespace player {
         }
     }
 
-    string BoardGame::turn() const {
-        if (numOfPlayers < 2) {
+    string BoardGame::turn(){
+        if (numOfPlayers <= 1) {
             return "No players in the game.";
         } else{
             return playersList[currentPlayerIndex]->getName();
@@ -70,9 +70,9 @@ namespace player {
         return names;
     }
 
-    string BoardGame::winner() const {
+    std::string BoardGame::winner() const {
         int count = 0;
-        string winnerName;
+        std::string winnerName;
         for (int i = 0; i < numOfPlayers; ++i) {
             if (!playersList[i]->isCouped()) {
                 count++;
@@ -86,8 +86,37 @@ namespace player {
         }
     }
 
+        bool BoardGame::hasWinner() const {
+        int count = 0;
+        for (int i = 0; i < numOfPlayers; ++i) {
+            if (!playersList[i]->isCouped()) {
+                count++;
+            }
+        }
+        return (count == 1);
+    }
+
+    void BoardGame::endGame() {
+        if (!hasWinner()) {
+            return;
+        }
+        
+        int winnerIndex = -1;
+        for (int i = 0; i < numOfPlayers; ++i) {
+            if (!playersList[i]->isCouped()) {
+                winnerIndex = i;
+                break;
+            }
+        }
+        
+        if (winnerIndex != -1) {
+            delete playersList[winnerIndex];
+            playersList[winnerIndex] = nullptr;
+        }
+    }
+
     void BoardGame::nextTurn() {
-        Player* curr = getCurrentPlayer();
+    Player* curr = getCurrentPlayer();
 
         if (curr != nullptr && curr->getRole() == "Spy"){
             Spy* spyPlayer = dynamic_cast<Spy*>(curr);

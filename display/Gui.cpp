@@ -211,6 +211,35 @@ namespace gui{
             sf::Event event;
             while (window.pollEvent(event)) {
 
+                if (game.hasWinner() && gameStarted) {
+                    std::string winnerName = game.winner();
+                    
+                    victoryText.setFont(font);
+                    victoryText.setCharacterSize(40);
+                    victoryText.setFillColor(sf::Color::Green);
+                    victoryText.setString(winnerName + " won!");
+                    victoryText.setPosition({150, 200});
+                    
+                    window.clear(sf::Color::Black);
+                    window.draw(victoryText);
+                    window.display();
+                    
+                    while (victoryTimer.getElapsedTime().asSeconds() < 5) {
+                        sf::Event event;
+                        while (window.pollEvent(event)) {
+                            if (event.type == sf::Event::Closed) {
+                                window.close();
+                                return;
+                            }
+                        }
+                    }
+                    window.close();
+                    game.endGame();
+                    
+                    return;
+                    
+                }
+
                 if (game.getAwaitingCoup()) {
                     int mx = sf::Mouse::getPosition(window).x;
                     int my = sf::Mouse::getPosition(window).y;
@@ -435,7 +464,6 @@ namespace gui{
             } else {
                 showButtons();
                 showMessage();
-  
             }
             window.display();
         }
