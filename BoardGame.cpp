@@ -175,12 +175,8 @@ namespace player {
         numOfGenerals = 0;
 
         for (int i = 0; i < numOfPlayers; ++i) {
-            if (playersList[i]->getRole() == "General" && !playersList[i]->isCouped()) {
-                if (attackerIndex == i) {
-                    continue; 
-                }else{
-                    generals[numOfGenerals++] = i;
-                }
+            if (playersList[i]->getRole() == "General" && !playersList[i]->isCouped() && attackerIndex != i) {
+                generals[numOfGenerals++] = i;
             }
         }
 
@@ -188,6 +184,7 @@ namespace player {
         if (numOfGenerals == 0){
             GameRules* attacker = dynamic_cast<GameRules*>(playersList[attackerIndex]);
             attacker->coup(*playersList[targetIndex]);
+            removePlayer(targetIndex);
             clearApproval();
         }
     }

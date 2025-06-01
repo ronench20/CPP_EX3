@@ -110,6 +110,7 @@ namespace player{
         if (getCoins() >= 7) {
             target.setCouped(true);
             removeCoins(7);
+            delete &target; 
             boardGame->nextTurn();
         } else {
             cout << "Not enough coins to coup." << endl;

@@ -1,5 +1,3 @@
-#ronen.chereshn@msmail.ariel.ac.il
-
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -g
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
@@ -30,9 +28,10 @@ $(EXEC): $(OBJ)
 Main: $(EXEC)
 	./$(EXEC)
 
+valgrind: $(EXEC)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(EXEC)
+
 clean:
 	rm -f $(OBJ) $(EXEC)
 
 rebuild: clean all
-
-.PHONY: all clean rebuild Main
