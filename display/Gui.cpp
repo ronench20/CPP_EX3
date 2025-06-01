@@ -219,23 +219,27 @@ namespace gui{
                     victoryText.setFillColor(sf::Color::Green);
                     victoryText.setString(winnerName + " won!");
                     victoryText.setPosition({150, 200});
+                    victoryTimer.restart();
                     
-                    window.clear(sf::Color::Black);
-                    window.draw(victoryText);
-                    window.display();
-                    
-                    while (victoryTimer.getElapsedTime().asSeconds() < 5) {
-                        sf::Event event;
+                    bool screenActive = true;
+                    while (screenActive){
+                        window.clear(sf::Color::Black);
+                        window.draw(victoryText);
+                        window.display();
+                        
                         while (window.pollEvent(event)) {
                             if (event.type == sf::Event::Closed) {
                                 window.close();
                                 return;
                             }
                         }
+                        if (victoryTimer.getElapsedTime().asSeconds() > 5) {
+                            screenActive = false;
+                        }
                     }
+
                     window.close();
                     game.endGame();
-                    
                     return;
                     
                 }
