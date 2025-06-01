@@ -8,6 +8,7 @@
 #include "RolesH/Judge.hpp"
 #include "RolesH/Merchant.hpp"
 #include "RolesH/Spy.hpp"
+#include <stdexcept>
 
 using namespace std;
 
@@ -116,23 +117,23 @@ namespace player {
     }
 
     void BoardGame::createPlayer(const string &name) {
-        int i = rand() % 3;
+        int i = rand() % 2;
         Player* player1 = nullptr;
 
         if (i == 0){
-            player1 = new Baron(name, this);
+        //    player1 = new Baron(name, this);
         //} else if (i == 1){
-        //    player1 = new General(name, this);
-        //}
+            player1 = new General(name, this);
+        }
         //else if (i == 2){
         //    player1 = new Governor(name, this);
-        }
+        //}
         else if (i == 1){
             player1 = new Judge(name, this);
         }
-        else if (i == 2){
-            player1 = new Merchant(name, this);
-        }
+        //else if (i == 2){
+        //    player1 = new Merchant(name, this);
+        //}
         //else if (i == 3){
         //    player1 = new Spy(name, this);
         //}
@@ -175,7 +176,11 @@ namespace player {
 
         for (int i = 0; i < numOfPlayers; ++i) {
             if (playersList[i]->getRole() == "General" && !playersList[i]->isCouped()) {
-                generals[numOfGenerals++] = i;
+                if (attackerIndex == i) {
+                    continue; 
+                }else{
+                    generals[numOfGenerals++] = i;
+                }
             }
         }
 
@@ -213,12 +218,9 @@ namespace player {
                     removePlayer(targetIndex);
                     nextTurn();
                 } else {
-                    cout << "Attacker doesn't have enough coins!" << endl;
+                    throw std::invalid_argument("Attacker doesn't have enough coins to coup.");
                 }
                 clearApproval();
-            } else {
-                Player* general = playersList[generals[nextGeneralIndex]];
-                cout << "General " << general->getName() << " can prevent the coup." << endl;
             }
         } 
     }
@@ -246,14 +248,18 @@ namespace player {
 
         for (int i = 0; i < numOfPlayers; ++i) {
             if (playersList[i]->getRole() == "Judge" && !playersList[i]->isCouped()) {
-                judges[numOfJudges++] = i;
+                if (bribeIndex == i) {
+                    continue; 
+                }else{
+                    judges[numOfJudges++] = i;
+                }
             }
         }
 
         nextJudgeIndex = 0;
         if (numOfJudges == 0)
         {
-            clearBribeApproval();
+            bribeDecision(false);
         }
         
     }
@@ -263,26 +269,26 @@ namespace player {
             cout << "No bribe in progress." << endl;
             return;
         }
+        
         Player* briber = playersList[briberIndex];
         Player* judge = playersList[judges[nextJudgeIndex]];
+        Judge* judgePlayer = dynamic_cast<Judge*>(judge);
+        GameRules* briberPlayer = dynamic_cast<GameRules*>(briber);
+        if (judgePlayer != nullptr && briberPlayer != nullptr){
 
-        if (prevent) {
-            Judge* judgePlayer = dynamic_cast<Judge*>(judge);
-            GameRules* rules = dynamic_cast<GameRules*>(briber);
-            if (judgePlayer != nullptr && rules != nullptr){
+            if (prevent) {
                 judgePlayer->blockBribe(*briber);
-                rules->setBribeBlocked(true);
+                clearBribeApproval();
+                return;
             }
-            clearBribeApproval();
-            return;
+            nextJudgeIndex++;
+            if (nextJudgeIndex >= numOfJudges){
+                briberPlayer->setExtraMove(true);
+                clearBribeApproval();
+            }
         }
-        nextJudgeIndex++;
-        if (nextJudgeIndex >= numOfJudges){
-            clearBribeApproval();
-        }
-          
-
     }
+
     void BoardGame::clearBribeApproval() {
         awaitingBribe = false;
         briberIndex = -1;

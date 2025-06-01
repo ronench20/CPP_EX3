@@ -21,6 +21,7 @@ namespace gui {
         bool selectToSanction = false;
         bool selectToCoup = false;
         bool showMerchantArrestedMessage = false;
+        bool showJudgeSanctionMessage = false;
 
         bool selectToUndoTax = false;
         bool selectToSpy = false;
@@ -77,6 +78,8 @@ namespace gui {
         sf::Clock spyMessegeTimer;
         sf::Text merchantArrestedLabel;
         sf::Clock merchantArrestedTimer;
+        sf::Text judgeSanctionLabel;
+        sf::Clock judgeSanctionTimer;
 
 
 

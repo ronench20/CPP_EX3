@@ -1,3 +1,5 @@
+#ronen.chereshn@msmail.ariel.ac.il
+
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -g
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system

@@ -75,7 +75,7 @@ namespace player {
 
     void Player::addCoins(int amount) {
         coins += amount;
-        std:: cout << "coins were added to " + getName() << std::endl;
+        std:: cout << amount << "coins were added to " + getName() << std::endl;
 
     }
 

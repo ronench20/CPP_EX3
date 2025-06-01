@@ -199,6 +199,11 @@ namespace gui{
         merchantArrestedLabel.setFillColor(sf::Color::Yellow);
         merchantArrestedLabel.setPosition({20, 280});
 
+        judgeSanctionLabel.setFont(font);
+        judgeSanctionLabel.setCharacterSize(18);
+        judgeSanctionLabel.setFillColor(sf::Color::Yellow);
+        judgeSanctionLabel.setPosition({20, 280});
+
     }
 
     void Gui::run() {
@@ -330,7 +335,7 @@ namespace gui{
                         }else if (curr != nullptr && target != curr && target->getRole() == "Merchant") {
                             if (target->getCoins() < 2){
                                 showMerchantArrestedMessage = true;
-                                merchantArrestedLabel.setString("You can't arrest " + target->getName() + " because they are a Merchant with <2 coins.");
+                                merchantArrestedLabel.setString("You can't arrest " + target->getName() + " because they are a Merchant with less than 2 coins.");
                                 merchantArrestedTimer.restart();
                                 selectToArrest = false;
                                 targetIndex = -1;
@@ -350,9 +355,18 @@ namespace gui{
                     if (!mustCoup && selectToSanction && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {
                         Player* target = game.getPlayerIndex(targetIndex);
                         if (curr != nullptr && target != curr && !target->getSanctioned()) {
-                            ((GameRules*)curr)->sanction(*target);
-                            targetIndex = -1;
-                            selectToSanction = false;
+                            if (curr->getCoins() < 4 && target->getRole() == "Judge"){
+                                showJudgeSanctionMessage = true;
+                                judgeSanctionLabel.setString("You can't sanction " + target->getName() + " because you have less than 4 coins.");
+                                judgeSanctionTimer.restart();
+                                selectToSanction = false;
+                                targetIndex = -1;
+                            }
+                            else{
+                                ((GameRules*)curr)->sanction(*target);
+                                targetIndex = -1;
+                                selectToSanction = false;
+                            }
                         }
                     }
 
@@ -527,7 +541,7 @@ namespace gui{
             if (selectToArrest) playerSelect("arrest");
         }
 
-        if (mustCoup || curr == nullptr || curr->getCoins() <= 2 || curr->getSanctioned()) {
+        if (mustCoup || curr == nullptr || curr->getCoins() <= 2) {
             sanctionButton.setFillColor(sf::Color::Red);
         } else {
             sanctionButton.setFillColor(sf::Color::Green);
@@ -601,6 +615,11 @@ namespace gui{
             window.draw(merchantArrestedLabel);
         } else {
             showMerchantArrestedMessage = false;
+        }
+        if (showJudgeSanctionMessage && judgeSanctionTimer.getElapsedTime().asSeconds() < 3) {
+            window.draw(judgeSanctionLabel);
+        } else {
+            showJudgeSanctionMessage = false;
         }
         
     }

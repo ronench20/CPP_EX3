@@ -38,7 +38,6 @@ namespace player{
     void GameRules::bribe() {
         if (getCoins() >= 4) {
             removeCoins(4);
-            setExtraMove(true);
             setBribeBlocked(false);
             boardGame->bribeApproval(boardGame->getCurrentPlayerIndex());
         } else {
@@ -85,7 +84,7 @@ namespace player{
         }
     }
     void GameRules::sanction(Player& target) {
-        if (target.getRole() == "Judge" && target.getCoins() >= 4) {
+        if (target.getRole() == "Judge" && getCoins() >= 4) {
             removeCoins(4);
             target.setSanctioned(true);
             target.setSanctionedUntilNextTurn(true);
