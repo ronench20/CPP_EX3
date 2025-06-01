@@ -87,10 +87,17 @@ namespace player {
     }
 
     void BoardGame::nextTurn() {
-        Player* current = getCurrentPlayer();
-        if (current != nullptr && current->getExtraMove()) {
-            current->setExtraMove(false);
-            std::cout << current->getName() << " used their extra action (bribe).\n";
+        Player* curr = getCurrentPlayer();
+
+        if (curr != nullptr && curr->getRole() == "Spy"){
+            Spy* spyPlayer = dynamic_cast<Spy*>(curr);
+            if (spyPlayer != nullptr) {
+                spyPlayer->resetSpiedThisTurn();
+            }
+        }
+        if (curr != nullptr && curr->getExtraMove()) {
+            curr->setExtraMove(false);
+            std::cout << curr->getName() << " used their extra action (bribe).\n";
             return;
         }
 
@@ -106,37 +113,30 @@ namespace player {
                 }
             }
         }
-        if (current != nullptr && current->getRole() == "Spy")
-        {
-            Spy* spy = dynamic_cast<Spy*>(current);
-            if (spy){
-                spy->resetSpiedThisTurn();
-            }
-        }
-        
+
     }
 
     void BoardGame::createPlayer(const string &name) {
-        int i = rand() % 2;
+        int i = rand() % 6; 
         Player* player1 = nullptr;
 
         if (i == 0){
-        //    player1 = new Baron(name, this);
-        //} else if (i == 1){
+            player1 = new Baron(name, this);
+        } else if (i == 1){
             player1 = new General(name, this);
         }
-        //else if (i == 2){
-        //    player1 = new Governor(name, this);
-        //}
-        else if (i == 1){
+        else if (i == 2){
+            player1 = new Governor(name, this);
+        }
+        else if (i == 3){
             player1 = new Judge(name, this);
         }
-        //else if (i == 2){
-        //    player1 = new Merchant(name, this);
-        //}
-        //else if (i == 3){
-        //    player1 = new Spy(name, this);
-        //}
+        else if (i == 4){
+            player1 = new Merchant(name, this);
+        }
+        else if (i == 5){
+            player1 = new Spy(name, this);
+        }
         addPlayer(player1);
         cout << "player added" << endl;
     }
