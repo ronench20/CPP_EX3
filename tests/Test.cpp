@@ -191,5 +191,4 @@ TEST_CASE("Rules")
         CHECK(merchant.getCoins() == 1);
         CHECK(target.getCoins() == 8);
     }
-
 }

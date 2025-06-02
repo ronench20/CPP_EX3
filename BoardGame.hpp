@@ -31,6 +31,7 @@ namespace player{
 
     public:
         BoardGame();
+        ~BoardGame();
         void addPlayer(Player* player);
         std::string turn();
         Player* getCurrentPlayer() const;
