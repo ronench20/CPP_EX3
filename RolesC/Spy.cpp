@@ -15,7 +15,7 @@ namespace player{
 
     void Spy::arrestBlock(Player &target){
         if (getSpiedThisTurn()){
-             std::cout << ("You have already spied this turn.\n");
+            throw std::invalid_argument("You have already spied this turn.");
         }else{
             target.setSpied(true);
             target.setSpiedUntilNextTurn(true);

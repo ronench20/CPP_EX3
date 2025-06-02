@@ -38,7 +38,7 @@ test: $(TEST_EXEC)
 	./$(TEST_EXEC)
 
 $(TEST_EXEC): $(TEST_OBJ) $(filter-out main.o,$(OBJ))
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 valgrind: $(EXEC)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(EXEC)

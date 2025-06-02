@@ -434,8 +434,10 @@ namespace gui{
                     }
                     if (spyButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)){
                         if (curr != nullptr && curr->getRole() == "Spy") {
-                            selectToSpy = true;
-                            targetIndex = -1;
+                            if (!((Spy*)curr)->getSpiedThisTurn()) {
+                                selectToSpy = true;
+                                targetIndex = -1;
+                            }
                         }
                     }
                     if (selectToSpy && targetIndex >= 0 && targetIndex < game.getNumOfPlayers()) {

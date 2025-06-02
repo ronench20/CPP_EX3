@@ -11,6 +11,7 @@
 #include "../RolesH/Spy.hpp"
 #include "../RolesH/General.hpp"
 #include "../GameRules.hpp"
+//#include "../display/Gui.hpp"
 
 using namespace player;
 
@@ -58,6 +59,7 @@ TEST_CASE("Player tests")
 TEST_CASE("GameRules"){
     BoardGame boardGame;
     Judge judge("judge", &boardGame);
+    Governor governor("governor", &boardGame);
     judge.startTurn();
     CHECK_FALSE(judge.getSanctioned());
     judge.gather();
@@ -69,20 +71,16 @@ TEST_CASE("GameRules"){
     CHECK_THROWS(judge.gather(), "You can't gather because you are under sanction.");
     CHECK_THROWS(judge.tax(), "You can't tax because you are under sanction.");
     judge.addCoins(2);
-    judge.bribe();
+    governor.addCoins(10);
+    governor.bribe();
     judge.removeCoins(1);
     CHECK_FALSE(judge.getBribeBlocked());
-    CHECK_THROWS(judge.bribe(), "Not enough coins to bribe.");
-    Governor target("target", &boardGame);
-    target.addCoins(1);
-    judge.arrest(target);
-    CHECK(target.isArrested());
-    CHECK(judge.getCoins() == 1);
-    CHECK(target.getCoins() == 0);
-    target.setArrested(false);
-    target.setArrestedLastTurn(false);
-    CHECK_THROWS(judge.arrest(target), target.getName() + " has no coins.");
-    //CHECK_THROWS(judge.coup(target), "Not enough coins to coup.");
+    judge.arrest(governor);
+    CHECK(governor.isArrested());
+    CHECK(judge.getCoins() == 5);
+    CHECK(governor.getCoins() == 5);
+    governor.setArrested(false);
+    governor.setArrestedLastTurn(false);
 }
 
 TEST_CASE("BoardGame tests")

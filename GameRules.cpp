@@ -42,7 +42,6 @@ namespace player{
             setBribeBlocked(false);
             boardGame->bribeApproval(boardGame->getCurrentPlayerIndex());
         } else {
-            //std::cout << "Not enough coins to bribe." << std::endl;
             throw std::invalid_argument("Not enough coins to bribe.");
         }
     }

@@ -82,7 +82,7 @@ namespace player {
         if (count == 1) {
             return winnerName;
         } else {
-            return "No winner yet.";
+            throw std::invalid_argument("No winner yet.");
         }
     }
 
@@ -273,12 +273,9 @@ namespace player {
         numOfJudges = 0;
 
         for (int i = 0; i < numOfPlayers; ++i) {
-            if (playersList[i]->getRole() == "Judge" && !playersList[i]->isCouped()) {
-                if (bribeIndex == i) {
-                    continue; 
-                }else{
-                    judges[numOfJudges++] = i;
-                }
+            if (playersList[i]->getRole() == "Judge" && !playersList[i]->isCouped() && bribeIndex != i) {
+                judges[numOfJudges++] = i;
+                
             }
         }
 
@@ -286,6 +283,7 @@ namespace player {
         if (numOfJudges == 0)
         {
             bribeDecision(false);
+            clearBribeApproval();
         }
         
     }
@@ -295,25 +293,47 @@ namespace player {
             cout << "No bribe in progress." << endl;
             return;
         }
-        
+
         Player* briber = playersList[briberIndex];
+        GameRules* briberPlayer = dynamic_cast<GameRules*>(briber);
+        
+        if (numOfJudges == 0) {
+            if (briberPlayer) {
+                briberPlayer->setExtraMove(true);
+            }
+            clearBribeApproval();
+            return;
+        }
+
         Player* judge = playersList[judges[nextJudgeIndex]];
         Judge* judgePlayer = dynamic_cast<Judge*>(judge);
-        GameRules* briberPlayer = dynamic_cast<GameRules*>(briber);
-        if (judgePlayer != nullptr && briberPlayer != nullptr){
 
+        if (judge->isCouped()) {
+            nextJudgeIndex++;
+            if (nextJudgeIndex >= numOfJudges) {
+                if (briberPlayer) {
+                    briberPlayer->setExtraMove(true);
+                }
+                clearBribeApproval();
+            }
+            return;
+        }
+
+        if (judgePlayer && briberPlayer) {
             if (prevent) {
                 judgePlayer->blockBribe(*briber);
                 clearBribeApproval();
                 return;
             }
+
             nextJudgeIndex++;
-            if (nextJudgeIndex >= numOfJudges){
+            if (nextJudgeIndex >= numOfJudges) {
                 briberPlayer->setExtraMove(true);
                 clearBribeApproval();
             }
         }
     }
+
 
     void BoardGame::clearBribeApproval() {
         awaitingBribe = false;
