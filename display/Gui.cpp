@@ -325,19 +325,19 @@ namespace gui{
                     }
 
                     if (!mustCoup && gatherButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        if (curr != nullptr) {
+                        if (curr != nullptr && !curr->getSanctioned()) {
                             ((GameRules*)curr)->gather();
                         }
                     }
 
                     if (!mustCoup && taxButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        if (curr != nullptr) {
+                        if (curr != nullptr && !curr->getSanctioned()) {
                             ((GameRules*)curr)->tax();
                         }
                     }
 
                     if (!mustCoup && bribeButton.getGlobalBounds().contains((float)mouseX, (float)mouseY)) {
-                        if (curr != nullptr) {
+                        if (curr != nullptr && curr->getCoins() >= 4) {
                             ((GameRules*)curr)->bribe();
                         }
                     }

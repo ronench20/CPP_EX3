@@ -3,6 +3,7 @@
 
 #include "GameRules.hpp"
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 namespace player{
@@ -19,7 +20,7 @@ namespace player{
             boardGame->nextTurn();
         }
         else {
-            cout << getName() << " is under sanction and cannot gather." << endl;
+            throw std::invalid_argument("You can't gather because you are under sanction.");
 
         }
     }
@@ -31,7 +32,7 @@ namespace player{
             boardGame->nextTurn();
         }
         else {
-            cout << getName() << " is under sanction or governed and cannot tax." << endl;
+            throw std::invalid_argument("You can't tax because you are under sanction.");
         }
     }
 
@@ -41,7 +42,8 @@ namespace player{
             setBribeBlocked(false);
             boardGame->bribeApproval(boardGame->getCurrentPlayerIndex());
         } else {
-            std::cout << "Not enough coins to bribe." << std::endl;
+            //std::cout << "Not enough coins to bribe." << std::endl;
+            throw std::invalid_argument("Not enough coins to bribe.");
         }
     }
 
@@ -55,11 +57,11 @@ namespace player{
                 return;
             }
             if (target.isArrested()) {
-                cout << target.getName() << " is already arrested." << endl;
+                throw std::invalid_argument(target.getName() + " is already arrested.");
             } else if (target.getCoins() == 0) {
-                cout << target.getName() << " has no coins to arrest." << endl;
+                throw std::invalid_argument(target.getName() + " has no coins.");
             } else if (isSpied()) {
-                cout << target.getName() << " is spied." << endl;
+                throw std::invalid_argument(target.getName() + " is spied.");
 
             }else if (target.getRole() == "Merchant"){
                 if (target.getCoins() < 2) {
@@ -106,14 +108,14 @@ namespace player{
     }
 
 
-    void GameRules::coup(player::Player &target) {
+    void GameRules::coup(Player &target) {
         if (getCoins() >= 7) {
             target.setCouped(true);
             removeCoins(7);
-            delete &target; 
+            delete &target;
             boardGame->nextTurn();
         } else {
-            cout << "Not enough coins to coup." << endl;
+            throw std::invalid_argument("Not enough coins to coup.");
         }
     }
 

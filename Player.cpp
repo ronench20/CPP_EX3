@@ -81,6 +81,9 @@ namespace player {
 
     void Player::removeCoins(int amount) {
         coins -= amount;
+        if (coins < 0) {
+            throw std::invalid_argument("Cannot remove more coins than the player has.");
+        }
     }
 
 
