@@ -20,17 +20,4 @@ namespace player{
             std::cout << getName() << " the Merchant got an extra coin." << std::endl;
         }
     }
-
-    //void Merchant::setArrested(bool arrested) {
-        //if (arrested) {
-            //if (getCoins() >= 2){
-                //removeCoins(2);
-                //std::cout << getName() << " was arrested and paid 2 coins to the bank." << std::endl;
-            //} else {
-                //throw std::invalid_argument("Not enough coins to pay the arrest fee.");
-            //}
-        //}
-        //Player::setArrested(arrested);
-    //}
-
 }

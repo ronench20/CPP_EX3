@@ -87,19 +87,61 @@ namespace gui {
 
 
 
-        void registrationInput(sf::Event& event);
-        void registration();
-        void showButtons();
-        void showMessage();
-        void makeButton(const sf::RectangleShape& button, const sf::Text& text);
-        void showCurrTurn();
-        void showPlayers();
-        void playerSelect(const std::string& mode);
+/**
+     * Handles user input during the registration phase.
+     * @param event Reference to the game that is active.
+     */
+    void registrationInput(sf::Event& event);
 
-    public:
-        Gui(player::BoardGame& game);
-        void run();
+    /**
+     * Displays the registration interface and processes registration logic.
+     */
+    void registration();
 
+    /**
+     * Renders the main action buttons on the GUI.
+     */
+    void showButtons();
+
+    /**
+     * Displays messages to the user, such as errors or notifications.
+     */
+    void showMessage();
+
+    /**
+     * Draws a button with the specified shape and text.
+     * @param button The rectangle shape representing the button.
+     * @param text The text to display on the button.
+     */
+    void makeButton(const sf::RectangleShape& button, const sf::Text& text);
+
+    /**
+     * Shows the current player's turn on the GUI.
+     */
+    void showCurrTurn();
+
+    /**
+     * Displays status about all players in the game.
+     */
+    void showPlayers();
+
+    /**
+     * Handles player selection for a specific mode.
+     * @param mode The mode indicating the type of selection (e.g., arrest, sanction).
+     */
+    void playerSelect(const std::string& mode);
+
+public:
+    /**
+     * Constructs the GUI.
+     * @param game Reference to the BoardGame instance.
+     */
+    Gui(player::BoardGame& game);
+
+    /**
+     * Runs the main GUI.
+     */
+    void run();
     };
 }
 #endif //CPP_EX3_GUI_HPP
